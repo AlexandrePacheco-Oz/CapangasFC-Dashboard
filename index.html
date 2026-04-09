@@ -2188,30 +2188,46 @@
             if (!alertDiv) return;
 
             if (jogoHoje) {
-                const endereco = (jogoHoje.endereco || "").trim();
-                const encodedAddr = encodeURIComponent(endereco);
+                const rawEndereco = (jogoHoje.endereco || "").trim();
                 
+                // Lógica inteligente de Link: se já for um link, usa direto. Se não, gera busca.
+                let mapsLink = "";
+                let wazeLink = "";
+
+                if (rawEndereco) {
+                    if (rawEndereco.toLowerCase().startsWith('http')) {
+                        mapsLink = rawEndereco;
+                        wazeLink = rawEndereco;
+                    } else {
+                        const encoded = encodeURIComponent(rawEndereco);
+                        mapsLink = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+                        wazeLink = `https://waze.com/ul?q=${encoded}`;
+                    }
+                }
+
                 let gpsButtons = "";
-                if (endereco) {
+                if (rawEndereco) {
                     gpsButtons = `
                         <div class="game-alert-btns">
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodedAddr}" target="_blank" class="gps-btn">
+                            <a href="${mapsLink}" target="_blank" class="gps-btn">
                                 <span style="font-size:1.5rem">📍</span>
                                 Google Maps
                             </a>
-                            <a href="https://waze.com/ul?q=${encodedAddr}" target="_blank" class="gps-btn">
+                            <a href="${wazeLink}" target="_blank" class="gps-btn">
                                 <span style="font-size:1.5rem">🚗</span>
                                 Waze
                             </a>
                         </div>
                     `;
+                } else {
+                    gpsButtons = `<p style="font-size:0.7rem; color:var(--text-dim); margin-top:10px;">⚠️ Endereço não informado no cadastro.</p>`;
                 }
 
                 document.getElementById('hojeAlertContent').innerHTML = `
                     <div class="game-alert-icon">⚽</div>
                     <h3>HOJE TEM JOGO!</h3>
                     <p><strong>${jogoHoje.titulo}</strong><br>${jogoHoje.sub || ''}
-                    ${endereco ? `<br><span style="font-size:0.8rem;color:var(--accent)">${endereco}</span>` : ''}</p>
+                    ${rawEndereco ? `<br><span style="font-size:0.8rem;color:var(--accent)">${rawEndereco}</span>` : ''}</p>
                     ${gpsButtons}
                 `;
                 alertDiv.style.display = 'flex';
