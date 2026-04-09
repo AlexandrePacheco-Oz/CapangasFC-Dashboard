@@ -86,7 +86,7 @@
             padding: 10px;
             background: #fff;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .header h1 {
@@ -157,9 +157,17 @@
             font-weight: 700;
         }
 
-        .stat-value.total { color: var(--accent); }
-        .stat-value.paid { color: var(--success); }
-        .stat-value.pending { color: var(--danger); }
+        .stat-value.total {
+            color: var(--accent);
+        }
+
+        .stat-value.paid {
+            color: var(--success);
+        }
+
+        .stat-value.pending {
+            color: var(--danger);
+        }
 
         /* --- Search & Controls --- */
         .controls {
@@ -202,7 +210,7 @@
         }
 
         .login-section input {
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
             padding: 6px 10px;
@@ -223,7 +231,9 @@
             font-size: 0.8rem;
         }
 
-        .btn-login:hover { transform: scale(1.05); }
+        .btn-login:hover {
+            transform: scale(1.05);
+        }
 
         /* --- Table Styling --- */
         .table-container {
@@ -271,8 +281,15 @@
             gap: 5px;
         }
 
-        .badge.pago { background: rgba(0, 255, 136, 0.1); color: var(--success); }
-        .badge.pendente { background: rgba(255, 77, 77, 0.1); color: var(--danger); }
+        .badge.pago {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+        }
+
+        .badge.pendente {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+        }
 
         .action-btn {
             background: var(--glass-bg);
@@ -312,7 +329,10 @@
             padding: 20px;
         }
 
-        .modal.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
 
         .modal-content {
             background: var(--glass-bg);
@@ -346,7 +366,9 @@
             transition: opacity 0.2s;
         }
 
-        .close-modal:hover { opacity: 1; }
+        .close-modal:hover {
+            opacity: 1;
+        }
 
         .btn-view-qr {
             background: none;
@@ -368,20 +390,79 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--accent);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 2000;
+            transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            pointer-events: none;
+        }
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
         }
 
         @media (max-width: 600px) {
-            body { padding: 20px 15px; }
-            .header h1 { font-size: 1.7rem; }
-            .controls { flex-direction: column; }
-            .login-section { width: 100%; justify-content: space-between; gap: 5px; }
-            .login-section input { width: 100%; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .stat-card { padding: 12px; }
-            .qr-code { width: 120px; height: 120px; }
-            .btn-view-qr { display: block; margin: 10px auto 0 auto; width: fit-content; }
+            body {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.7rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .login-section {
+                width: 100%;
+                justify-content: space-between;
+                gap: 5px;
+            }
+
+            .login-section input {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .qr-code {
+                width: 120px;
+                height: 120px;
+            }
+
+            .btn-view-qr {
+                display: block;
+                margin: 10px auto 0 auto;
+                width: fit-content;
+            }
         }
     </style>
 </head>
@@ -401,16 +482,18 @@
         </div>
     </div>
 
+    <div id="pixToast" class="toast">✅ Chave PIX copiada!</div>
+
     <div class="container">
         <div class="header">
             <img src="imagem/LogoPng.png" alt="Logo" class="logo-header" onerror="this.style.display='none'">
             <h1>Controle de Mensalidade</h1>
             <p>Capangas Futebol Clube</p>
-            
-            <img src="imagem/qr code.png" alt="QR Code PIX" class="qr-code" onclick="openModal()" style="cursor: pointer;">
-            <div class="pix-badge">
-                Chave PIX: <span>11985112723</span>
-                <button class="btn-view-qr" onclick="openModal()">AMPLIAR QR CODE</button>
+
+
+            <div class="pix-badge" onclick="copyPIX()" style="cursor: pointer;" title="Clique para copiar a chave PIX">
+                Chave PIX: <span id="pixKey">11985112723</span>
+                <button class="btn-view-qr" onclick="event.stopPropagation(); openModal()">AMPLIAR QR CODE</button>
             </div>
         </div>
 
@@ -433,14 +516,16 @@
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Buscar por nome..." oninput="render()">
             </div>
-            
+
             <div class="login-section" id="loginBox">
                 <input type="text" id="user" placeholder="Usuário">
                 <input type="password" id="pass" placeholder="Senha">
                 <button class="btn-login" onclick="login()">Entrar</button>
             </div>
         </div>
-        <div id="statusLogin" style="text-align: right; padding-right: 10px; margin-bottom: 10px; font-size: 0.8rem; font-weight: 600;"></div>
+        <div id="statusLogin"
+            style="text-align: right; padding-right: 10px; margin-bottom: 10px; font-size: 0.8rem; font-weight: 600;">
+        </div>
 
         <div class="table-container">
             <table>
@@ -506,11 +591,22 @@
             }
         }
 
-        function login() {
+        async function getHash(string) {
+            const msgUint8 = new TextEncoder().encode(string);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function login() {
             let u = document.getElementById("user").value;
             let p = document.getElementById("pass").value;
 
-            if (u === "admin" && p === "123") {
+            // Hash correspondente à senha "123"
+            const adminHash = "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3";
+            const userHash = await getHash(p);
+
+            if (u === "admin" && userHash === adminHash) {
                 adminLogado = true;
                 document.getElementById("statusLogin").innerHTML = "<span style='color: var(--success)'>✅ Modo Admin Ativado</span>";
                 document.getElementById("loginBox").style.display = "none";
@@ -519,6 +615,17 @@
             }
 
             render();
+        }
+
+        function copyPIX() {
+            const pixKey = document.getElementById("pixKey").innerText;
+            navigator.clipboard.writeText(pixKey).then(() => {
+                const toast = document.getElementById("pixToast");
+                toast.classList.add("active");
+                setTimeout(() => {
+                    toast.classList.remove("active");
+                }, 2000);
+            });
         }
 
         function render() {
@@ -573,4 +680,4 @@
 
 </body>
 
-</html>
+</html>
