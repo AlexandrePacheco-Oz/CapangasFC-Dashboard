@@ -1514,7 +1514,8 @@
                 // Validação para checar se o backend já está retornando os jogos e não as pessoas
                 if (data && Array.isArray(data)) {
                     if (data.length > 0 && data[0].ano !== undefined) {
-                        jogos = data;
+                        // Filtra linhas vazias devolvidas pela sheet
+                        jogos = data.filter(j => j.ano && String(j.ano).trim() !== '');
                         salvarJogosNoCache();
                     } else if (data.length === 0) {
                         jogos = [];
