@@ -1150,6 +1150,7 @@
             <div id="calAdminPanel" style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border-top:1px solid var(--glass-border); background:rgba(212,175,55,0.04);">
                 <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
                     <span style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐 Admin — Adicionar Jogo</span>
+                    <button class="action-btn" style="background:var(--success); color:#000; font-weight:700; margin-left:auto; padding:6px 12px; font-size:0.75rem;" onclick="salvarJogosBtn()">💾 Salvar Agenda</button>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <input type="number" id="jogoNovoDia" placeholder="Dia" min="1" max="31"
@@ -1201,6 +1202,27 @@
         </button>
 
         <div id="mensalidadeSection" style="display:none; flex-direction:column; gap:15px; margin-top:15px;">
+            
+            <!-- Painel Admin de Mensalidade -->
+            <div id="mensalidadeAdminPanel" style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border:1px solid var(--glass-border); border-radius:12px; background:rgba(212,175,55,0.04);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐 Admin — Gerenciar Mensalidade</span>
+                    <button class="action-btn" style="background:var(--success); color:#000; font-weight:700; padding:6px 12px; font-size:0.75rem;" onclick="salvarMensalidadeBtn()">💾 Salvar Mensalidades</button>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                    <input type="text" id="novoJogadorNome" placeholder="Nome do jogador..." style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
+                    <select id="novoJogadorPosicao" style="flex:1; min-width:100px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
+                        <option value="Goleiro">Goleiro</option>
+                        <option value="Fixo/Zagueiro">Fixo/Zagueiro</option>
+                        <option value="Ala/Lateral">Ala/Lateral</option>
+                        <option value="Meio-Campo">Meio-Campo</option>
+                        <option value="Pivô/Ataque">Pivô/Ataque</option>
+                        <option value="Coringa" selected>Coringa</option>
+                    </select>
+                    <button onclick="adicionarPessoa()" style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕ Adicionar</button>
+                </div>
+            </div>
+
             <div class="controls">
                 <div class="search-container" style="width: 100%;">
                     <input type="text" id="searchInput" placeholder="Buscar por nome..." oninput="render()" style="width: 100%;">
@@ -1212,6 +1234,7 @@
                     <thead>
                         <tr>
                             <th>Nome</th>
+                            <th>Posição</th>
                             <th>Status</th>
                             <th>Ação</th>
                         </tr>
@@ -1417,21 +1440,17 @@
         function showAdminUI() {
             document.getElementById("adminIconBtn").innerHTML = "🔓";
             document.getElementById("statusLogin").innerHTML = `
-                <div style="display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-wrap: wrap; margin-bottom: 12px;">
-                    <span style='color: var(--success); font-size: 0.8rem; margin-right:auto;'>✅ Admin</span>
-                    <button class="action-btn" style="background: var(--success); color: #000; font-weight: 700; padding: 6px 10px; font-size: 0.75rem;" onclick="manualSave()">💾 Salvar</button>
+                <div style="display: flex; gap: 4px; justify-content: flex-end; align-items: center; margin-bottom: 5px;">
+                    <span style='color: var(--success); font-size: 0.8rem; margin-right:auto;'>✅ Admin Ativo</span>
                     <button class="action-btn" style="background: var(--danger); color: #fff; font-weight: 700; padding: 6px 10px; font-size: 0.75rem;" onclick="logout()">🏃 Sair</button>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <input type="text" id="novoJogador" placeholder="Novo jogador..." style="background: rgba(255,255,255,0.05); border: 1px solid var(--accent); border-radius: 10px; padding: 10px; color: #fff;">
-                    <button class="action-btn" style="background: var(--accent); color: #000; font-weight: 700;" onclick="adicionarPessoa()">➕ Adicionar</button>
                 </div>
             `;
             document.getElementById("loginBox").style.display = "none";
             document.getElementById("floatingLogin").style.display = "flex";
             
-            // Mostrar painel admin do calendário
+            // Mostrar painéis admin 
             document.getElementById("calAdminPanel").style.display = "flex";
+            document.getElementById("mensalidadeAdminPanel").style.display = "flex";
             renderCalendario();
         }
 
@@ -1440,17 +1459,19 @@
         // =============================================
 
         function adicionarPessoa() {
-            const input = document.getElementById("novoJogador");
-            const nome = input.value.trim();
-            if (!nome) return;
+            const inputNome = document.getElementById("novoJogadorNome");
+            const selPos = document.getElementById("novoJogadorPosicao");
+            const nome = inputNome.value.trim();
+            const pos = selPos.value;
+            if (!nome) { showToast('⚠️ Digite o nome!'); return; }
 
-            pessoas.push({ nome: nome, pago: false });
-            input.value = "";
+            pessoas.push({ nome: nome, pago: false, posicao: pos });
+            inputNome.value = "";
             salvar();
             render();
 
             // Sincroniza com Google Sheets
-            enviarParaSheets({ action: 'add', nome: nome });
+            enviarParaSheets({ action: 'add', nome: nome, posicao: pos });
             showToast("👤 Jogador adicionado!");
         }
 
@@ -1462,24 +1483,23 @@
             document.getElementById("floatingLogin").style.display = "none";
             document.getElementById("user").value = "";
             document.getElementById("pass").value = "";
-            // Esconder painel admin do calendário
+            
             document.getElementById("calAdminPanel").style.display = "none";
+            document.getElementById("mensalidadeAdminPanel").style.display = "none";
             render();
             renderCalendario();
         }
 
-        function manualSave() {
+        function salvarMensalidadeBtn() {
             salvar();
-            salvarJogosNoCache();
-            // Sincroniza todos os dados das mensalidades
             enviarParaSheets({ action: 'save', data: pessoas });
-            
-            // Sincroniza todos os dados do calendário (dando um tempinho para não cruzar requests no free tier)
-            setTimeout(() => {
-                enviarParaSheets({ type: 'calendario', action: 'saveGames', data: jogos });
-            }, 1000);
-            
-            showToast("💾 Salvando na planilha...");
+            showToast("💾 Mensalidades salvas na nuvem!");
+        }
+
+        function salvarJogosBtn() {
+            salvarJogosNoCache();
+            enviarParaSheets({ type: 'calendario', action: 'saveGames', data: jogos });
+            showToast("💾 Agenda salva na nuvem!");
         }
 
         function removerPessoa(index) {
@@ -1538,6 +1558,9 @@
                     lista.innerHTML += `
                         <tr>
                             <td style="font-weight: 500;">${p.nome}</td>
+                            <td data-label="Posição">
+                                <span style="font-size: 0.75rem; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--glass-border); color: #ccc;">${p.posicao || '-'}</span>
+                            </td>
                             <td data-label="Status">
                                 <span class="badge ${p.pago ? 'pago' : 'pendente'}">
                                     ${p.pago ? '● PAGO' : '● PENDENTE'}
