@@ -447,21 +447,29 @@
         }
 
         @media (max-width: 1024px) {
-            body { padding: 15px 10px; }
-            .header { margin-bottom: 15px; }
-            .header h1 { font-size: 1.4rem; margin-bottom: 4px; }
-            .header p { font-size: 0.85rem; margin-bottom: 10px; }
-            .logo-header { width: 60px; height: 60px; margin-bottom: 8px; }
-            .controls { flex-direction: column; gap: 8px; margin-bottom: 15px; }
-            .login-section { width: 100%; justify-content: space-between; gap: 5px; padding: 6px; }
-            .login-section input { width: 100%; height: 32px; font-size: 0.75rem; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-            .stat-card { padding: 8px 5px; border-radius: 12px; }
-            .stat-label { font-size: 0.6rem; letter-spacing: 0.5px; }
-            .stat-value { font-size: 0.95rem; }
-            .qr-code { width: 100px; height: 100px; }
-            .btn-view-qr { display: block; margin: 8px auto 0 auto; width: fit-content; font-size: 0.65rem; }
-            .pix-badge { padding: 6px 12px; font-size: 0.75rem; }
+            body { padding: 10px 8px; }
+            .header { margin-bottom: 10px; }
+            .header h1 { font-size: 1.2rem; margin-bottom: 2px; }
+            .header p { font-size: 0.8rem; margin-bottom: 8px; }
+            .logo-header { width: 50px; height: 50px; margin-bottom: 5px; }
+            .controls { flex-direction: column; gap: 6px; margin-bottom: 12px; }
+            .login-section { width: 100%; justify-content: space-between; gap: 5px; padding: 4px; border-radius: 8px; }
+            .login-section input { width: 100%; height: 28px; font-size: 0.7rem; padding: 4px 8px; }
+            .btn-login { height: 28px; padding: 0 10px; font-size: 0.7rem; }
+            
+            .stats-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 5px; 
+                margin-bottom: 12px; 
+            }
+            .stat-card { padding: 6px 4px; border-radius: 10px; border-left-width: 2px; }
+            .stat-label { font-size: 0.55rem; letter-spacing: 0; }
+            .stat-value { font-size: 0.85rem; }
+            
+            .qr-code { width: 90px; height: 90px; }
+            .btn-view-qr { display: block; margin: 5px auto 0 auto; padding: 2px 8px; font-size: 0.6rem; }
+            .pix-badge { padding: 4px 10px; font-size: 0.7rem; }
+            #searchInput { height: 32px; padding: 0 12px; font-size: 0.8rem; }
 
             /* Table to Cards */
             table, thead, tbody, th, td, tr { display: block; }
@@ -470,36 +478,42 @@
             tr {
                 background: var(--glass-bg);
                 border: 1px solid var(--glass-border);
-                border-radius: 12px;
-                margin-bottom: 8px;
-                padding: 10px 12px;
+                border-radius: 10px;
+                margin-bottom: 6px;
+                padding: 6px 10px;
                 backdrop-filter: blur(10px);
-                position: relative;
             }
             td {
                 border-bottom: none;
-                padding: 6px 0;
+                padding: 4px 0;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                min-height: 38px;
+                min-height: 32px;
             }
             td:before {
                 content: attr(data-label);
-                font-size: 0.65rem;
+                font-size: 0.6rem;
                 text-transform: uppercase;
                 color: var(--accent);
                 font-weight: 700;
             }
-            td:first-child { font-size: 1rem; border-bottom: 1px solid var(--glass-border); margin-bottom: 6px; padding-bottom: 8px; font-weight: 700; }
+            td:first-child { 
+                font-size: 0.95rem; 
+                border-bottom: 1px solid var(--glass-border); 
+                margin-bottom: 4px; 
+                padding-bottom: 6px; 
+                font-weight: 700; 
+            }
             td:first-child:before { display: none; }
             
             .action-btn {
                 flex: 1;
                 width: 100%;
-                height: 32px;
-                font-size: 0.7rem;
+                height: 28px;
+                font-size: 0.65rem;
                 min-width: 0;
+                padding: 0 5px;
             }
         }
     </style>
