@@ -295,17 +295,33 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
-            padding: 5px 10px;
+            padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.75rem;
+            min-width: 90px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
         }
 
         .action-btn:hover:not(:disabled) {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
+        }
+
+        .action-btn.btn-delete {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .action-btn.btn-delete:hover:not(:disabled) {
+            background: var(--danger);
+            color: #fff;
         }
 
         .action-btn:disabled {
@@ -422,7 +438,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 850px) {
             body { padding: 20px 10px; }
             .header h1 { font-size: 1.6rem; }
             .controls { flex-direction: column; gap: 10px; }
@@ -448,10 +464,11 @@
             }
             td {
                 border-bottom: none;
-                padding: 5px 0;
+                padding: 8px 0;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                min-height: 45px;
             }
             td:before {
                 content: attr(data-label);
@@ -460,8 +477,13 @@
                 color: var(--accent);
                 font-weight: 700;
             }
-            td:first-child { font-size: 1.1rem; border-bottom: 1px solid var(--glass-border); margin-bottom: 5px; padding-bottom: 10px; }
+            td:first-child { font-size: 1.1rem; border-bottom: 1px solid var(--glass-border); margin-bottom: 8px; padding-bottom: 12px; font-weight: 700; }
             td:first-child:before { display: none; }
+            
+            .action-btn {
+                flex: 1;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -715,13 +737,13 @@
                                 </span>
                             </td>
                             <td data-label="Ação">
-                                <div style="display: flex; gap: 5px;">
+                                <div style="display: flex; gap: 5px; align-items: center;">
                                     <button class="action-btn" onclick="toggle(${i})" ${!adminLogado ? 'disabled' : ''}>
                                         ${p.pago ? 'Desfazer' : 'Marcar'}
                                     </button>
                                     ${adminLogado ? `
-                                        <button class="action-btn" style="border-color: var(--danger); color: var(--danger);" onclick="removerPessoa(${i})">
-                                            🗑️
+                                        <button class="action-btn btn-delete" onclick="removerPessoa(${i})">
+                                            Excluir
                                         </button>
                                     ` : ''}
                                 </div>
