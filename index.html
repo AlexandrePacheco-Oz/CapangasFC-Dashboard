@@ -1713,20 +1713,12 @@
             const container = document.getElementById('gamesListView');
             const jogosDoMes = getJogosMes(calAno, calMes);
 
-            if (jogosDoMes.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-dim); text-align: center; padding: 20px;">Nenhum jogo neste mês.</p>`;
-                return;
-            }
+            let contentHTML = '';
 
-            container.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 0 2px;">
-                    <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">${MESES_PT[calMes-1]} ${calAno}</span>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="cal-nav-btn" onclick="changeMonth(-1)" title="Mês anterior">&#8249;</button>
-                        <button class="cal-nav-btn" onclick="changeMonth(1)" title="Próximo mês">&#8250;</button>
-                    </div>
-                </div>
-                ${jogosDoMes.map(j => {
+            if (jogosDoMes.length === 0) {
+                contentHTML = `<p style="color: var(--text-dim); text-align: center; padding: 20px;">Nenhum jogo neste mês.</p>`;
+            } else {
+                contentHTML = jogosDoMes.map(j => {
                     const idx = jogos.indexOf(j);
                     const btnDelete = adminLogado
                         ? `<button class="action-btn btn-delete" style="min-width:60px;height:28px;font-size:0.65rem;" onclick="removerJogo(${idx})">Excluir</button>`
@@ -1741,7 +1733,18 @@
                         <span class="game-item-badge ${j.tipo}">${tipoLabel(j.tipo)}</span>
                         ${btnDelete}
                     </div>`;
-                }).join('')}
+                }).join('');
+            }
+
+            container.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 0 2px;">
+                    <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">${MESES_PT[calMes-1]} ${calAno}</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="cal-nav-btn" onclick="changeMonth(-1)" title="Mês anterior">&#8249;</button>
+                        <button class="cal-nav-btn" onclick="changeMonth(1)" title="Próximo mês">&#8250;</button>
+                    </div>
+                </div>
+                ${contentHTML}
             `;
         }
 
