@@ -149,6 +149,69 @@
             font-weight: 700;
         }
 
+        /* --- Alerta de Jogo Hoje --- */
+        .game-alert {
+            display: none; /* Ativado via JS */
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 86, 179, 0.15));
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            animation: pulse-alert 2s infinite alternate;
+        }
+
+        @keyframes pulse-alert {
+            from { box-shadow: 0 0 10px rgba(212, 175, 55, 0.1); }
+            to { box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); }
+        }
+
+        .game-alert-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .game-alert-info h3 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .game-alert-info p {
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .game-alert-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .gps-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .gps-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
         /* --- Stats Grid --- */
         .stats-grid {
             display: grid;
@@ -1168,6 +1231,13 @@
             </div>
         </div>
 
+        <!-- Alerta Dinâmico: Jogo Hoje -->
+        <div id="hojeAlert" class="game-alert">
+            <div class="game-alert-content" id="hojeAlertContent">
+                <!-- Preenchido via JS -->
+            </div>
+        </div>
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Arrecadado</div>
@@ -1277,7 +1347,11 @@
                     <input type="text" id="jogoNovoTitulo" placeholder="Adversário / Título do jogo..."
                         style="flex:2; min-width:160px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
                     <input type="text" id="jogoNovoSub" placeholder="Info extra (ex: 11h)"
-                        style="flex:1; min-width:100px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                        style="flex:1; min-width:100px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <input type="text" id="jogoNovoEndereco" placeholder="Endereço ou Link do Maps..."
+                        style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
                     <button onclick="adicionarJogo()"
                         style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; font-size:0.8rem; white-space:nowrap; transition:transform 0.2s;"
                         onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
@@ -1830,7 +1904,7 @@
                 carregarJogosDoCache();
             }
             renderCalendario();
-            if (calTab === 'jogos') renderGamesList();
+            if (calTab === 'jogos') renderGamesList(); verificarJogoHoje();
         }
 
         function adicionarJogo() {
@@ -1840,6 +1914,7 @@
             const tipo = document.getElementById('jogoNovoTipo').value;
             const titulo = document.getElementById('jogoNovoTitulo').value.trim();
             const sub = document.getElementById('jogoNovoSub').value.trim();
+            const endereco = document.getElementById('jogoNovoEndereco').value.trim();
 
             if (!dia || !mes || !ano || !titulo) {
                 showToast('⚠️ Preencha dia, mês, ano e título!');
@@ -1850,22 +1925,23 @@
                 return;
             }
 
-            jogos.push({ ano, mes, dia, tipo, titulo, sub });
+            jogos.push({ ano, mes, dia, tipo, titulo, sub, endereco });
             salvarJogosNoCache();
 
             // Envia para o Sheets
-            enviarParaSheets({ type: 'calendario', action: 'addGame', ano, mes, dia, tipo, titulo, sub });
+            enviarParaSheets({ type: 'calendario', action: 'addGame', ano, mes, dia, tipo, titulo, sub, endereco });
 
             // Limpar campos
             document.getElementById('jogoNovoTitulo').value = '';
             document.getElementById('jogoNovoSub').value = '';
+            document.getElementById('jogoNovoEndereco').value = '';
             document.getElementById('jogoNovoDia').value = '';
 
             // Navega para o mês do jogo adicionado
             calAno = ano;
             calMes = mes;
             renderCalendario();
-            if (calTab === 'jogos') renderGamesList();
+            if (calTab === 'jogos') renderGamesList(); verificarJogoHoje();
             showToast('📅 Jogo adicionado!');
         }
 
@@ -1883,7 +1959,7 @@
                 enviarParaSheets({ type: 'calendario', action: 'removeGame', index: syncIndex });
 
                 renderCalendario();
-                if (calTab === 'jogos') renderGamesList();
+                if (calTab === 'jogos') renderGamesList(); verificarJogoHoje();
                 showToast('🗑️ Jogo removido!');
             }
         }
@@ -1912,7 +1988,7 @@
             if (calMes > 12) { calMes = 1; calAno++; }
             if (calMes < 1) { calMes = 12; calAno--; }
             renderCalendario();
-            if (calTab === 'jogos') renderGamesList();
+            if (calTab === 'jogos') renderGamesList(); verificarJogoHoje();
         }
 
         function switchCalTab(tab) {
@@ -1921,7 +1997,7 @@
             document.getElementById('tabJogos').className = 'cal-tab ' + (tab === 'jogos' ? 'active' : 'inactive');
             document.getElementById('calendarView').style.display = tab === 'calendario' ? 'block' : 'none';
             document.getElementById('gamesListView').className = 'games-list' + (tab === 'jogos' ? ' active' : '');
-            if (tab === 'jogos') renderGamesList();
+            if (tab === 'jogos') renderGamesList(); verificarJogoHoje();
         }
 
         function toggleMensalidade() {
@@ -2063,9 +2139,43 @@
             `;
         }
 
+        function verificarJogoHoje() {
+            const hoje = new Date();
+            const d = hoje.getDate();
+            const m = hoje.getMonth() + 1;
+            const y = hoje.getFullYear();
+
+            // Procura jogo exatamente hoje
+            const jogoHoje = jogos.find(j => parseInt(j.dia) === d && parseInt(j.mes) === m && parseInt(j.ano) === y);
+            const alertDiv = document.getElementById('hojeAlert');
+
+            if (jogoHoje && jogoHoje.endereco) {
+                const encodedAddr = encodeURIComponent(jogoHoje.endereco);
+                document.getElementById('hojeAlertContent').innerHTML = `
+                    <div class="game-alert-info">
+                        <h3>📢 JOGO HOJE: ${jogoHoje.titulo}</h3>
+                        <p>${jogoHoje.sub || ''} • ${jogoHoje.endereco}</p>
+                    </div>
+                    <div class="game-alert-btns">
+                        <a href="https://www.google.com/maps/search/?api=1&query=${encodedAddr}" target="_blank" class="gps-btn">
+                            📍 Google Maps
+                        </a>
+                        <a href="https://waze.com/ul?q=${encodedAddr}" target="_blank" class="gps-btn">
+                            🚗 Waze
+                        </a>
+                    </div>
+                `;
+                alertDiv.style.display = 'block';
+            } else {
+                alertDiv.style.display = 'none';
+            }
+        }
+
         // Iniciar o calendário no mês atual
         buildPosModal();
         renderCalendario();
+        carregarJogosDoCache();
+        verificarJogoHoje();
     </script>
 
 </body>
