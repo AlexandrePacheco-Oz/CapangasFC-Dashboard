@@ -1231,9 +1231,12 @@
                 const response = await fetch(API_URL);
                 const data = await response.json();
 
-                if (data && Array.isArray(data) && data.length > 0) {
+                if (data && Array.isArray(data) && data.length > 0 && data[0].nome !== undefined) {
                     pessoas = data;
                     salvarNoCache(); // Salva cache local para fallback
+                    render();
+                } else if (data && data.length === 0) {
+                    pessoas = [];
                     render();
                 } else {
                     carregarDoCache();
@@ -1243,6 +1246,9 @@
                 carregarDoCache();
                 showToast("⚠️ Offline - usando dados locais");
             }
+            
+            // Agora carrega os jogos do calendário do Sheets
+            carregarJogosDoSheets();
         }
 
         // Envia dados para a planilha Google
@@ -1365,9 +1371,16 @@
 
         function manualSave() {
             salvar();
-            // Sincroniza todos os dados com a planilha
+            salvarJogosNoCache();
+            // Sincroniza todos os dados das mensalidades
             enviarParaSheets({ action: 'save', data: pessoas });
-            showToast("💾 Salvo na planilha!");
+            
+            // Sincroniza todos os dados do calendário (dando um tempinho para não cruzar requests no free tier)
+            setTimeout(() => {
+                enviarParaSheets({ type: 'calendario', action: 'saveGames', data: jogos });
+            }, 1000);
+            
+            showToast("💾 Salvando na planilha...");
         }
 
         function removerPessoa(index) {
@@ -1473,10 +1486,52 @@
         ];
 
         // Carrega jogos do localStorage ou usa padrão
-        let jogos = JSON.parse(localStorage.getItem('capangas_jogos') || 'null') || jogosPadrao;
+        let jogos = [];
 
-        function salvarJogos() {
+        function salvarJogosNoCache() {
             localStorage.setItem('capangas_jogos', JSON.stringify(jogos));
+        }
+
+        function carregarJogosDoCache() {
+            let dados = localStorage.getItem('capangas_jogos');
+            if (dados) {
+                jogos = JSON.parse(dados);
+            } else {
+                jogos = [...jogosPadrao];
+            }
+        }
+
+        async function carregarJogosDoSheets() {
+            if (!API_URL) {
+                carregarJogosDoCache();
+                renderCalendario();
+                return;
+            }
+            try {
+                const response = await fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + 'type=calendario');
+                const data = await response.json();
+                
+                // Validação para checar se o backend já está retornando os jogos e não as pessoas
+                if (data && Array.isArray(data)) {
+                    if (data.length > 0 && data[0].ano !== undefined) {
+                        jogos = data;
+                        salvarJogosNoCache();
+                    } else if (data.length === 0) {
+                        jogos = [];
+                        salvarJogosNoCache();
+                    } else {
+                        // Provavelmente o backend ainda não foi atualizado e retornou as pessoas.
+                        carregarJogosDoCache();
+                    }
+                } else {
+                    carregarJogosDoCache();
+                }
+            } catch(e) {
+                console.warn("Offline ou Erro ao carregar jogos da nuvem", e);
+                carregarJogosDoCache();
+            }
+            renderCalendario();
+            if (calTab === 'jogos') renderGamesList();
         }
 
         function adicionarJogo() {
@@ -1497,7 +1552,10 @@
             }
 
             jogos.push({ ano, mes, dia, tipo, titulo, sub });
-            salvarJogos();
+            salvarJogosNoCache();
+
+            // Envia para o Sheets
+            enviarParaSheets({ type: 'calendario', action: 'addGame', ano, mes, dia, tipo, titulo, sub });
 
             // Limpar campos
             document.getElementById('jogoNovoTitulo').value = '';
@@ -1516,8 +1574,15 @@
             if (!adminLogado) return;
             const j = jogos[idx];
             if (confirm(`Remover "${j.titulo}" do dia ${j.dia}/${j.mes}/${j.ano}?`)) {
+                // A posição para remover no Sheets deve considerar qual o index real na lista principal
+                const syncIndex = idx;
+                
                 jogos.splice(idx, 1);
-                salvarJogos();
+                salvarJogosNoCache();
+                
+                // Envia para o Sheets
+                enviarParaSheets({ type: 'calendario', action: 'removeGame', index: syncIndex });
+                
                 renderCalendario();
                 if (calTab === 'jogos') renderGamesList();
                 showToast('🗑️ Jogo removido!');
