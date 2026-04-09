@@ -1046,6 +1046,17 @@
         </div>
     </div>
 
+    <!-- Modal Escolha Múltiplas Posições -->
+    <div id="posModal" class="modal" onclick="closePosModal(event)" style="z-index: 1000;">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-height: 85vh; overflow-y: auto; text-align: left; padding: 20px; border: 1px solid var(--accent); max-width: 400px; margin: 5vh auto;">
+            <span class="close-modal" onclick="closePosModal()">&times;</span>
+            <h3 style="color: var(--accent); margin-bottom: 5px; text-align: center;">Escolher Posições</h3>
+            <p style="text-align: center; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 15px;">Pode escolher mais de uma.</p>
+            <div id="posGrid" style="display:flex; flex-direction:column; gap:15px;"></div>
+            <button class="action-btn" style="background: var(--success); color: #000; width: 100%; margin-top: 20px; font-weight: bold; padding: 12px; font-size: 0.9rem;" onclick="confirmarPosicoes()">💾 Confirmar Posições</button>
+        </div>
+    </div>
+
     <div id="pixToast" class="toast">✅ Chave PIX copiada!</div>
 
     <div class="container" style="position: relative;">
@@ -1211,14 +1222,8 @@
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
                     <input type="text" id="novoJogadorNome" placeholder="Nome do jogador..." style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
-                    <select id="novoJogadorPosicao" style="flex:1; min-width:100px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
-                        <option value="Goleiro">Goleiro</option>
-                        <option value="Fixo/Zagueiro">Fixo/Zagueiro</option>
-                        <option value="Ala/Lateral">Ala/Lateral</option>
-                        <option value="Meio-Campo">Meio-Campo</option>
-                        <option value="Pivô/Ataque">Pivô/Ataque</option>
-                        <option value="Coringa" selected>Coringa</option>
-                    </select>
+                    <input type="hidden" id="novoJogadorPosicaoHidden" value="">
+                    <button class="action-btn" id="btnEscolherPosicao" style="flex:1; min-width:100px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; cursor:pointer;" onclick="abrirPosModal('novo')">🛡️ Posições (0)</button>
                     <button onclick="adicionarPessoa()" style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕ Adicionar</button>
                 </div>
             </div>
@@ -1246,6 +1251,74 @@
     </div>
 
     <script>
+        const LISTA_POSICOES = [
+            { cat: "Goleiros", itens: [ {sigla: "G", nome: "Goleiro"}, {sigla: "GK", nome: "Goalkeeper"} ] },
+            { cat: "Defensores", itens: [ {sigla: "Z", nome: "Zagueiro"}, {sigla: "CB", nome: "Center Back - Zagueiro Central"}, {sigla: "LD", nome: "Lateral Direito"}, {sigla: "LE", nome: "Lateral Esquerdo"}, {sigla: "RB", nome: "Right Back"}, {sigla: "LB", nome: "Left Back"}, {sigla: "ALA", nome: "Ala"}, {sigla: "LWB", nome: "Left Wing Back"}, {sigla: "RWB", nome: "Right Wing Back"} ] },
+            { cat: "Volantes / Meio-Campo", itens: [ {sigla: "VOL", nome: "Volante"}, {sigla: "DM", nome: "Defensive Midfielder"}, {sigla: "CDM", nome: "Central Defensive Midfielder"}, {sigla: "MC", nome: "Meia Central"}, {sigla: "CM", nome: "Central Midfielder"}, {sigla: "MCO", nome: "Meia-Central Ofensivo"}, {sigla: "CAM", nome: "Central Attacking Midfielder"}, {sigla: "MD", nome: "Meia Direita"}, {sigla: "ME", nome: "Meia Esquerda"}, {sigla: "RM", nome: "Right Midfielder"}, {sigla: "LM", nome: "Left Midfielder"} ] },
+            { cat: "Atacantes", itens: [ {sigla: "ATA", nome: "Atacante"}, {sigla: "CA", nome: "Centroavante"}, {sigla: "ST", nome: "Striker"}, {sigla: "CF", nome: "Center Forward"}, {sigla: "PD", nome: "Ponta Direita"}, {sigla: "PE", nome: "Ponta Esquerda"}, {sigla: "RW", nome: "Right Winger"}, {sigla: "LW", nome: "Left Winger"}, {sigla: "SA", nome: "Segundo Atacante"} ] }
+        ];
+
+        let posEditIndex = 'novo'; 
+
+        function buildPosModal() {
+            let html = '';
+            LISTA_POSICOES.forEach(cat => {
+                html += `<div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                            <h4 style="color: #ccc; margin-bottom: 8px; font-size: 0.85rem;">${cat.cat}</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">`;
+                cat.itens.forEach(item => {
+                    html += `
+                        <label style="background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--glass-border); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: transform 0.2s;">
+                            <input type="checkbox" value="${item.sigla}" class="pos-checkbox"> 
+                            <strong>${item.sigla}</strong> <span style="color:#aaa; font-size:0.65rem;">(${item.nome})</span>
+                        </label>`;
+                });
+                html += `</div></div>`;
+            });
+            document.getElementById('posGrid').innerHTML = html;
+        }
+
+        function abrirPosModal(index) {
+            posEditIndex = index;
+            let current = [];
+            if (index === 'novo') {
+                const val = document.getElementById('novoJogadorPosicaoHidden').value;
+                current = val ? val.split(',') : [];
+            } else {
+                const p = pessoas[index];
+                if (p.posicao) current = p.posicao.split(',');
+            }
+            
+            document.querySelectorAll('.pos-checkbox').forEach(chk => {
+                chk.checked = current.includes(chk.value);
+            });
+            
+            document.getElementById('posModal').style.display = 'flex';
+        }
+
+        function confirmarPosicoes() {
+            const boxes = document.querySelectorAll('.pos-checkbox:checked');
+            const selecionados = Array.from(boxes).map(b => b.value);
+            const strVal = selecionados.join(',');
+            
+            if (posEditIndex === 'novo') {
+                document.getElementById('novoJogadorPosicaoHidden').value = strVal;
+                document.getElementById('btnEscolherPosicao').innerText = selecionados.length > 0 ? \`🛡️ Posições (\${selecionados.length})\` : '🛡️ Posições (0)';
+            } else {
+                pessoas[posEditIndex].posicao = strVal;
+                salvar();
+                render();
+                enviarParaSheets({ action: 'save', data: pessoas });
+                showToast("🔄 Posições salvas com sucesso!");
+            }
+            closePosModal();
+        }
+
+        function closePosModal(e) {
+            if (e && e.target !== document.getElementById('posModal') && !e.target.classList.contains('close-modal')) return;
+            document.getElementById('posModal').style.display = 'none';
+        }
+
         // =============================================
         // 👁️ Ocultar Valores e Painel Admin
         // =============================================
@@ -1460,13 +1533,15 @@
 
         function adicionarPessoa() {
             const inputNome = document.getElementById("novoJogadorNome");
-            const selPos = document.getElementById("novoJogadorPosicao");
+            const selPos = document.getElementById("novoJogadorPosicaoHidden");
             const nome = inputNome.value.trim();
             const pos = selPos.value;
             if (!nome) { showToast('⚠️ Digite o nome!'); return; }
 
             pessoas.push({ nome: nome, pago: false, posicao: pos });
             inputNome.value = "";
+            selPos.value = "";
+            document.getElementById("btnEscolherPosicao").innerText = "🛡️ Posições (0)";
             salvar();
             render();
 
@@ -1525,16 +1600,6 @@
             enviarParaSheets({ action: 'toggle', index: i, value: pessoas[i].pago });
         }
 
-        function alterarPosicao(i, novaPosicao) {
-            if (!adminLogado) return;
-            pessoas[i].posicao = novaPosicao;
-            salvar();
-            render();
-            // Auto-sync a lista inteira, pois a action 'save' sobrepõe (overwrite) tudo
-            enviarParaSheets({ action: 'save', data: pessoas });
-            showToast("🔄 Posição atualizada e salva!");
-        }
-
         // =============================================
         // 📋 PIX
         // =============================================
@@ -1570,17 +1635,14 @@
                             <td style="font-weight: 500;">${p.nome}</td>
                             <td data-label="Posição">
                                 ${adminLogado ? `
-                                <select onchange="alterarPosicao(${i}, this.value)" style="font-size: 0.75rem; background: #111827; padding: 4px; border-radius: 6px; border: 1px solid var(--accent); color: #fff;">
-                                    <option value="Goleiro" ${p.posicao == 'Goleiro' ? 'selected' : ''}>Goleiro</option>
-                                    <option value="Fixo/Zagueiro" ${p.posicao == 'Fixo/Zagueiro' ? 'selected' : ''}>Fixo/Zagueiro</option>
-                                    <option value="Ala/Lateral" ${p.posicao == 'Ala/Lateral' ? 'selected' : ''}>Ala/Lateral</option>
-                                    <option value="Meio-Campo" ${p.posicao == 'Meio-Campo' ? 'selected' : ''}>Meio-Campo</option>
-                                    <option value="Pivô/Ataque" ${p.posicao == 'Pivô/Ataque' ? 'selected' : ''}>Pivô/Ataque</option>
-                                    <option value="Coringa" ${p.posicao == 'Coringa' || !p.posicao ? 'selected' : ''}>Coringa</option>
-                                </select>` 
-                                : 
-                                `<span style="font-size: 0.75rem; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--glass-border); color: #ccc;">${p.posicao || 'Coringa'}</span>`
-                                }
+                                <button class="action-btn" onclick="abrirPosModal(${i})" style="font-size: 0.75rem; background: #111827; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--accent); color: var(--accent); cursor: pointer;">
+                                    ${p.posicao ? p.posicao : '➕ Add Posição'}
+                                </button>
+                                ` : `
+                                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px;">
+                                    ${(p.posicao ? p.posicao.split(',') : ['-']).map(sigla => `<span style="font-size: 0.7rem; background: rgba(255,255,255,0.05); padding: 4px 6px; border-radius: 4px; border: 1px solid var(--glass-border); color: #ccc;">${sigla}</span>`).join('')}
+                                </div>
+                                `}
                             </td>
                             <td data-label="Status">
                                 <span class="badge ${p.pago ? 'pago' : 'pendente'}">
@@ -1909,6 +1971,7 @@
         }
 
         // Iniciar o calendário no mês atual
+        buildPosModal();
         renderCalendario();
     </script>
 
