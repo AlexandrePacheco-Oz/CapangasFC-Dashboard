@@ -1614,6 +1614,7 @@
             if (calMes > 12) { calMes = 1;  calAno++; }
             if (calMes < 1)  { calMes = 12; calAno--; }
             renderCalendario();
+            if (calTab === 'jogos') renderGamesList();
         }
 
         function switchCalTab(tab) {
