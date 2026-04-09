@@ -651,16 +651,19 @@
                 right: 8px;
                 gap: 6px;
             }
+
             .icon-btn {
                 width: 36px;
                 height: 36px;
                 font-size: 1rem;
             }
+
             .floating-login {
                 top: 60px;
                 right: 15px;
                 width: 260px;
             }
+
             .cal-logo {
                 width: 60px !important;
                 height: 60px !important;
@@ -704,13 +707,13 @@
         }
 
         .cal-tab.inactive {
-            background: rgba(255,255,255,0.07);
+            background: rgba(255, 255, 255, 0.07);
             color: var(--text-dim);
             border: 1px solid var(--glass-border);
         }
 
         .cal-tab.inactive:hover {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.12);
             color: var(--text-main);
         }
 
@@ -765,7 +768,7 @@
         }
 
         .cal-nav-btn {
-            background: rgba(255,255,255,0.07);
+            background: rgba(255, 255, 255, 0.07);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
             width: 28px;
@@ -832,8 +835,8 @@
         }
 
         .cal-day.other-month {
-            background: rgba(255,255,255,0.03);
-            color: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.2);
         }
 
         .cal-day.no-game {
@@ -902,7 +905,7 @@
             font-size: 0.7rem;
             white-space: nowrap;
             z-index: 50;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             pointer-events: none;
         }
 
@@ -929,10 +932,21 @@
             flex-shrink: 0;
         }
 
-        .legend-dot.campo { background: var(--primary); }
-        .legend-dot.futsal { background: #e85d04; }
-        .legend-dot.cancelado { background: #c0392b; }
-        .legend-dot.treino { background: #1a7a4a; }
+        .legend-dot.campo {
+            background: var(--primary);
+        }
+
+        .legend-dot.futsal {
+            background: #e85d04;
+        }
+
+        .legend-dot.cancelado {
+            background: #c0392b;
+        }
+
+        .legend-dot.treino {
+            background: #1a7a4a;
+        }
 
         /* Games list tab */
         .games-list {
@@ -952,13 +966,13 @@
             gap: 14px;
             padding: 10px 14px;
             border-radius: 12px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             transition: background 0.2s;
         }
 
         .game-item:hover {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .game-item-date {
@@ -994,10 +1008,25 @@
             letter-spacing: 0.5px;
         }
 
-        .game-item-badge.campo { background: rgba(0,86,179,0.25); color: var(--primary-light); }
-        .game-item-badge.futsal { background: rgba(232,93,4,0.25); color: #ff7a2f; }
-        .game-item-badge.cancelado { background: rgba(192,57,43,0.25); color: #e74c3c; }
-        .game-item-badge.treino { background: rgba(26,122,74,0.25); color: #2ecc71; }
+        .game-item-badge.campo {
+            background: rgba(0, 86, 179, 0.25);
+            color: var(--primary-light);
+        }
+
+        .game-item-badge.futsal {
+            background: rgba(232, 93, 4, 0.25);
+            color: #ff7a2f;
+        }
+
+        .game-item-badge.cancelado {
+            background: rgba(192, 57, 43, 0.25);
+            color: #e74c3c;
+        }
+
+        .game-item-badge.treino {
+            background: rgba(26, 122, 74, 0.25);
+            color: #2ecc71;
+        }
 
         .top-action-bar {
             position: absolute;
@@ -1038,7 +1067,7 @@
             border: 1px solid var(--glass-border);
             padding: 18px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             z-index: 100;
             display: none;
             flex-direction: column;
@@ -1069,12 +1098,16 @@
 
     <!-- Modal Escolha Múltiplas Posições -->
     <div id="posModal" class="modal" onclick="closePosModal(event)" style="z-index: 1000;">
-        <div class="modal-content" onclick="event.stopPropagation()" style="max-height: 85vh; overflow-y: auto; text-align: left; padding: 20px; border: 1px solid var(--accent); max-width: 400px; margin: 5vh auto;">
+        <div class="modal-content" onclick="event.stopPropagation()"
+            style="max-height: 85vh; overflow-y: auto; text-align: left; padding: 20px; border: 1px solid var(--accent); max-width: 400px; margin: 5vh auto;">
             <span class="close-modal" onclick="closePosModal()">&times;</span>
             <h3 style="color: var(--accent); margin-bottom: 5px; text-align: center;">Escolher Posições</h3>
-            <p style="text-align: center; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 15px;">Pode escolher mais de uma.</p>
+            <p style="text-align: center; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 15px;">Pode
+                escolher mais de uma.</p>
             <div id="posGrid" style="display:flex; flex-direction:column; gap:15px;"></div>
-            <button class="action-btn" style="background: var(--success); color: #000; width: 100%; margin-top: 20px; font-weight: bold; padding: 12px; font-size: 0.9rem;" onclick="confirmarPosicoes()">💾 Confirmar Posições</button>
+            <button class="action-btn"
+                style="background: var(--success); color: #000; width: 100%; margin-top: 20px; font-weight: bold; padding: 12px; font-size: 0.9rem;"
+                onclick="confirmarPosicoes()">💾 Confirmar Posições</button>
         </div>
     </div>
 
@@ -1133,7 +1166,8 @@
 
             <!-- Tabs -->
             <div class="calendar-tabs">
-                <button class="cal-tab active" id="tabCalendario" onclick="switchCalTab('calendario')">📅 Calendário</button>
+                <button class="cal-tab active" id="tabCalendario" onclick="switchCalTab('calendario')">📅
+                    Calendário</button>
                 <button class="cal-tab inactive" id="tabJogos" onclick="switchCalTab('jogos')">⚽ Jogos</button>
             </div>
 
@@ -1179,10 +1213,15 @@
             <div class="games-list" id="gamesListView"></div>
 
             <!-- Admin Panel - Só aparece quando admin está logado -->
-            <div id="calAdminPanel" style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border-top:1px solid var(--glass-border); background:rgba(212,175,55,0.04);">
+            <div id="calAdminPanel"
+                style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border-top:1px solid var(--glass-border); background:rgba(212,175,55,0.04);">
                 <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
-                    <span style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐 Admin — Adicionar Jogo</span>
-                    <button class="action-btn" style="background:var(--success); color:#000; font-weight:700; margin-left:auto; padding:6px 12px; font-size:0.75rem;" onclick="salvarJogosBtn()">💾 Salvar Agenda</button>
+                    <span
+                        style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐
+                        Admin — Adicionar Jogo</span>
+                    <button class="action-btn"
+                        style="background:var(--success); color:#000; font-weight:700; margin-left:auto; padding:6px 12px; font-size:0.75rem;"
+                        onclick="salvarJogosBtn()">💾 Salvar Agenda</button>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <input type="number" id="jogoNovoDia" placeholder="Dia" min="1" max="31"
@@ -1234,24 +1273,35 @@
         </button>
 
         <div id="mensalidadeSection" style="display:none; flex-direction:column; gap:15px; margin-top:15px;">
-            
+
             <!-- Painel Admin de Mensalidade -->
-            <div id="mensalidadeAdminPanel" style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border:1px solid var(--glass-border); border-radius:12px; background:rgba(212,175,55,0.04);">
+            <div id="mensalidadeAdminPanel"
+                style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border:1px solid var(--glass-border); border-radius:12px; background:rgba(212,175,55,0.04);">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐 Admin — Gerenciar Mensalidade</span>
-                    <button class="action-btn" style="background:var(--success); color:#000; font-weight:700; padding:6px 12px; font-size:0.75rem;" onclick="salvarMensalidadeBtn()">💾 Salvar Mensalidades</button>
+                    <span
+                        style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐
+                        Admin — Gerenciar Mensalidade</span>
+                    <button class="action-btn"
+                        style="background:var(--success); color:#000; font-weight:700; padding:6px 12px; font-size:0.75rem;"
+                        onclick="salvarMensalidadeBtn()">💾 Salvar </button>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                    <input type="text" id="novoJogadorNome" placeholder="Nome do jogador..." style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
+                    <input type="text" id="novoJogadorNome" placeholder="Nome do jogador..."
+                        style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
                     <input type="hidden" id="novoJogadorPosicaoHidden" value="">
-                    <button class="action-btn" id="btnEscolherPosicao" style="flex:1; min-width:100px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; cursor:pointer;" onclick="abrirPosModal('novo')">🛡️ Posições (0)</button>
-                    <button onclick="adicionarPessoa()" style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕ Adicionar</button>
+                    <button class="action-btn" id="btnEscolherPosicao"
+                        style="flex:1; min-width:100px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; cursor:pointer;"
+                        onclick="abrirPosModal('novo')">🛡️ Posições (0)</button>
+                    <button onclick="adicionarPessoa()"
+                        style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕
+                        Adicionar</button>
                 </div>
             </div>
 
             <div class="controls">
                 <div class="search-container" style="width: 100%;">
-                    <input type="text" id="searchInput" placeholder="Buscar por nome..." oninput="render()" style="width: 100%;">
+                    <input type="text" id="searchInput" placeholder="Buscar por nome..." oninput="render()"
+                        style="width: 100%;">
                 </div>
             </div>
 
@@ -1273,13 +1323,13 @@
 
     <script>
         const LISTA_POSICOES = [
-            { cat: "Goleiros", itens: [ {sigla: "G", nome: "Goleiro"}, {sigla: "GK", nome: "Goalkeeper"} ] },
-            { cat: "Defensores", itens: [ {sigla: "Z", nome: "Zagueiro"}, {sigla: "CB", nome: "Center Back - Zagueiro Central"}, {sigla: "LD", nome: "Lateral Direito"}, {sigla: "LE", nome: "Lateral Esquerdo"}, {sigla: "RB", nome: "Right Back"}, {sigla: "LB", nome: "Left Back"}, {sigla: "ALA", nome: "Ala"}, {sigla: "LWB", nome: "Left Wing Back"}, {sigla: "RWB", nome: "Right Wing Back"} ] },
-            { cat: "Volantes / Meio-Campo", itens: [ {sigla: "VOL", nome: "Volante"}, {sigla: "DM", nome: "Defensive Midfielder"}, {sigla: "CDM", nome: "Central Defensive Midfielder"}, {sigla: "MC", nome: "Meia Central"}, {sigla: "CM", nome: "Central Midfielder"}, {sigla: "MCO", nome: "Meia-Central Ofensivo"}, {sigla: "CAM", nome: "Central Attacking Midfielder"}, {sigla: "MD", nome: "Meia Direita"}, {sigla: "ME", nome: "Meia Esquerda"}, {sigla: "RM", nome: "Right Midfielder"}, {sigla: "LM", nome: "Left Midfielder"} ] },
-            { cat: "Atacantes", itens: [ {sigla: "ATA", nome: "Atacante"}, {sigla: "CA", nome: "Centroavante"}, {sigla: "ST", nome: "Striker"}, {sigla: "CF", nome: "Center Forward"}, {sigla: "PD", nome: "Ponta Direita"}, {sigla: "PE", nome: "Ponta Esquerda"}, {sigla: "RW", nome: "Right Winger"}, {sigla: "LW", nome: "Left Winger"}, {sigla: "SA", nome: "Segundo Atacante"} ] }
+            { cat: "Goleiros", itens: [{ sigla: "G", nome: "Goleiro" }, { sigla: "GK", nome: "Goalkeeper" }] },
+            { cat: "Defensores", itens: [{ sigla: "Z", nome: "Zagueiro" }, { sigla: "CB", nome: "Center Back - Zagueiro Central" }, { sigla: "LD", nome: "Lateral Direito" }, { sigla: "LE", nome: "Lateral Esquerdo" }, { sigla: "RB", nome: "Right Back" }, { sigla: "LB", nome: "Left Back" }, { sigla: "ALA", nome: "Ala" }, { sigla: "LWB", nome: "Left Wing Back" }, { sigla: "RWB", nome: "Right Wing Back" }] },
+            { cat: "Volantes / Meio-Campo", itens: [{ sigla: "VOL", nome: "Volante" }, { sigla: "DM", nome: "Defensive Midfielder" }, { sigla: "CDM", nome: "Central Defensive Midfielder" }, { sigla: "MC", nome: "Meia Central" }, { sigla: "CM", nome: "Central Midfielder" }, { sigla: "MCO", nome: "Meia-Central Ofensivo" }, { sigla: "CAM", nome: "Central Attacking Midfielder" }, { sigla: "MD", nome: "Meia Direita" }, { sigla: "ME", nome: "Meia Esquerda" }, { sigla: "RM", nome: "Right Midfielder" }, { sigla: "LM", nome: "Left Midfielder" }] },
+            { cat: "Atacantes", itens: [{ sigla: "ATA", nome: "Atacante" }, { sigla: "CA", nome: "Centroavante" }, { sigla: "ST", nome: "Striker" }, { sigla: "CF", nome: "Center Forward" }, { sigla: "PD", nome: "Ponta Direita" }, { sigla: "PE", nome: "Ponta Esquerda" }, { sigla: "RW", nome: "Right Winger" }, { sigla: "LW", nome: "Left Winger" }, { sigla: "SA", nome: "Segundo Atacante" }] }
         ];
 
-        let posEditIndex = 'novo'; 
+        let posEditIndex = 'novo';
 
         function buildPosModal() {
             let html = '';
@@ -1309,11 +1359,11 @@
                 const p = pessoas[index];
                 if (p.posicao) current = p.posicao.split(',');
             }
-            
+
             document.querySelectorAll('.pos-checkbox').forEach(chk => {
                 chk.checked = current.includes(chk.value);
             });
-            
+
             document.getElementById('posModal').style.display = 'flex';
         }
 
@@ -1321,7 +1371,7 @@
             const boxes = document.querySelectorAll('.pos-checkbox:checked');
             const selecionados = Array.from(boxes).map(b => b.value);
             const strVal = selecionados.join(',');
-            
+
             if (posEditIndex === 'novo') {
                 document.getElementById('novoJogadorPosicaoHidden').value = strVal;
                 document.getElementById('btnEscolherPosicao').innerText = selecionados.length > 0 ? `🛡️ Posições (${selecionados.length})` : '🛡️ Posições (0)';
@@ -1366,7 +1416,7 @@
         // =============================================
         // 🔗 GOOGLE SHEETS API - Cole a URL do seu Web App aqui
         // =============================================
-    
+
         const _apiToken = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4Mmd5dDJCQ20xQkpfQ0lUQ2ZleHFrdlVUa3VNOGNuRERnZFkwYjJMaEozdC1hSjV4aHBrVTdxdjVtQWdRaTNPRF9pQS9leGVj';
         const API_URL = atob(_apiToken);
 
@@ -1457,7 +1507,7 @@
                 carregarDoCache();
                 showToast("⚠️ Offline - usando dados locais");
             }
-            
+
             // Agora carrega os jogos do calendário do Sheets
             carregarJogosDoSheets();
         }
@@ -1541,7 +1591,7 @@
             `;
             document.getElementById("loginBox").style.display = "none";
             document.getElementById("floatingLogin").style.display = "flex";
-            
+
             // Mostrar painéis admin 
             document.getElementById("calAdminPanel").style.display = "flex";
             document.getElementById("mensalidadeAdminPanel").style.display = "flex";
@@ -1579,7 +1629,7 @@
             document.getElementById("floatingLogin").style.display = "none";
             document.getElementById("user").value = "";
             document.getElementById("pass").value = "";
-            
+
             document.getElementById("calAdminPanel").style.display = "none";
             document.getElementById("mensalidadeAdminPanel").style.display = "none";
             render();
@@ -1704,11 +1754,11 @@
 
         // Jogos padrão (usados quando não há dados salvos)
         const jogosPadrao = [
-            { ano: 2026, mes: 4, dia: 4,  tipo: 'campo',    titulo: 'Patos FC',        sub: 'Campo' },
-            { ano: 2026, mes: 4, dia: 5,  tipo: 'cancelado', titulo: 'Festival Futsal', sub: '11h' },
-            { ano: 2026, mes: 4, dia: 12, tipo: 'campo',    titulo: 'West ham Osasco', sub: 'Campo' },
-            { ano: 2026, mes: 4, dia: 18, tipo: 'campo',    titulo: 'Pura Resenha FC', sub: 'Campo' },
-            { ano: 2026, mes: 4, dia: 26, tipo: 'futsal',   titulo: 'União Palmira',   sub: 'Futsal' },
+            { ano: 2026, mes: 4, dia: 4, tipo: 'campo', titulo: 'Patos FC', sub: 'Campo' },
+            { ano: 2026, mes: 4, dia: 5, tipo: 'cancelado', titulo: 'Festival Futsal', sub: '11h' },
+            { ano: 2026, mes: 4, dia: 12, tipo: 'campo', titulo: 'West ham Osasco', sub: 'Campo' },
+            { ano: 2026, mes: 4, dia: 18, tipo: 'campo', titulo: 'Pura Resenha FC', sub: 'Campo' },
+            { ano: 2026, mes: 4, dia: 26, tipo: 'futsal', titulo: 'União Palmira', sub: 'Futsal' },
         ];
 
         // Carrega jogos do localStorage ou usa padrão
@@ -1736,7 +1786,7 @@
             try {
                 const response = await fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + 'type=calendario');
                 const data = await response.json();
-                
+
                 // Validação para checar se o backend já está retornando os jogos e não as pessoas
                 if (data && Array.isArray(data)) {
                     if (data.length > 0 && data[0].ano !== undefined) {
@@ -1753,7 +1803,7 @@
                 } else {
                     carregarJogosDoCache();
                 }
-            } catch(e) {
+            } catch (e) {
                 console.warn("Offline ou Erro ao carregar jogos da nuvem", e);
                 carregarJogosDoCache();
             }
@@ -1762,12 +1812,12 @@
         }
 
         function adicionarJogo() {
-            const dia   = parseInt(document.getElementById('jogoNovoDia').value);
-            const mes   = parseInt(document.getElementById('jogoNovoMes').value);
-            const ano   = parseInt(document.getElementById('jogoNovoAno').value);
-            const tipo  = document.getElementById('jogoNovoTipo').value;
+            const dia = parseInt(document.getElementById('jogoNovoDia').value);
+            const mes = parseInt(document.getElementById('jogoNovoMes').value);
+            const ano = parseInt(document.getElementById('jogoNovoAno').value);
+            const tipo = document.getElementById('jogoNovoTipo').value;
             const titulo = document.getElementById('jogoNovoTitulo').value.trim();
-            const sub   = document.getElementById('jogoNovoSub').value.trim();
+            const sub = document.getElementById('jogoNovoSub').value.trim();
 
             if (!dia || !mes || !ano || !titulo) {
                 showToast('⚠️ Preencha dia, mês, ano e título!');
@@ -1803,13 +1853,13 @@
             if (confirm(`Remover "${j.titulo}" do dia ${j.dia}/${j.mes}/${j.ano}?`)) {
                 // A posição para remover no Sheets deve considerar qual o index real na lista principal
                 const syncIndex = idx;
-                
+
                 jogos.splice(idx, 1);
                 salvarJogosNoCache();
-                
+
                 // Envia para o Sheets
                 enviarParaSheets({ type: 'calendario', action: 'removeGame', index: syncIndex });
-                
+
                 renderCalendario();
                 if (calTab === 'jogos') renderGamesList();
                 showToast('🗑️ Jogo removido!');
@@ -1817,13 +1867,13 @@
         }
 
         const MESES_PT = [
-            'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-            'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
 
-        let calAno  = new Date().getFullYear();
-        let calMes  = new Date().getMonth() + 1; // 1-based
-        let calTab  = 'calendario';
+        let calAno = new Date().getFullYear();
+        let calMes = new Date().getMonth() + 1; // 1-based
+        let calTab = 'calendario';
 
         function getJogosDia(ano, mes, dia) {
             return jogos.filter(j => j.ano === ano && j.mes === mes && j.dia === dia);
@@ -1837,8 +1887,8 @@
 
         function changeMonth(delta) {
             calMes += delta;
-            if (calMes > 12) { calMes = 1;  calAno++; }
-            if (calMes < 1)  { calMes = 12; calAno--; }
+            if (calMes > 12) { calMes = 1; calAno++; }
+            if (calMes < 1) { calMes = 12; calAno--; }
             renderCalendario();
             if (calTab === 'jogos') renderGamesList();
         }
@@ -1846,8 +1896,8 @@
         function switchCalTab(tab) {
             calTab = tab;
             document.getElementById('tabCalendario').className = 'cal-tab ' + (tab === 'calendario' ? 'active' : 'inactive');
-            document.getElementById('tabJogos').className      = 'cal-tab ' + (tab === 'jogos'      ? 'active' : 'inactive');
-            document.getElementById('calendarView').style.display  = tab === 'calendario' ? 'block' : 'none';
+            document.getElementById('tabJogos').className = 'cal-tab ' + (tab === 'jogos' ? 'active' : 'inactive');
+            document.getElementById('calendarView').style.display = tab === 'calendario' ? 'block' : 'none';
             document.getElementById('gamesListView').className = 'games-list' + (tab === 'jogos' ? ' active' : '');
             if (tab === 'jogos') renderGamesList();
         }
@@ -1884,12 +1934,12 @@
 
             const hoje = new Date();
             const primeiroDia = new Date(calAno, calMes - 1, 1).getDay(); // 0=Dom
-            const diasNoMes   = new Date(calAno, calMes, 0).getDate();
+            const diasNoMes = new Date(calAno, calMes, 0).getDate();
 
             // Dias do mês anterior para preencher a grade
             const mesAnterior = calMes === 1 ? 12 : calMes - 1;
             const anoAnterior = calMes === 1 ? calAno - 1 : calAno;
-            const diasMesAnt  = new Date(anoAnterior, mesAnterior, 0).getDate();
+            const diasMesAnt = new Date(anoAnterior, mesAnterior, 0).getDate();
 
             const totalCelulas = Math.ceil((primeiroDia + diasNoMes) / 7) * 7;
 
@@ -1910,8 +1960,8 @@
                     } else {
                         const jogosNoDia = getJogosDia(calAno, calMes, dia);
                         const isHoje = hoje.getFullYear() === calAno &&
-                                       hoje.getMonth() + 1 === calMes &&
-                                       hoje.getDate() === dia;
+                            hoje.getMonth() + 1 === calMes &&
+                            hoje.getDate() === dia;
 
                         if (jogosNoDia.length > 0) {
                             const jogo = jogosNoDia[0];
@@ -1946,7 +1996,7 @@
                     : '';
                 return `<div class="legend-item">
                     <span class="legend-dot ${j.tipo}"></span>
-                    <span style="flex:1;"><strong>${j.dia < 10 ? '0'+j.dia : j.dia}</strong> - ${j.titulo}${j.sub ? ' (' + j.sub + ')' : ''}</span>
+                    <span style="flex:1;"><strong>${j.dia < 10 ? '0' + j.dia : j.dia}</strong> - ${j.titulo}${j.sub ? ' (' + j.sub + ')' : ''}</span>
                     ${btnDelete}
                 </div>`;
             }).join('');
@@ -1968,10 +2018,10 @@
                         : '';
                     return `
                     <div class="game-item">
-                        <div class="game-item-date">${j.dia < 10 ? '0'+j.dia : j.dia}</div>
+                        <div class="game-item-date">${j.dia < 10 ? '0' + j.dia : j.dia}</div>
                         <div class="game-item-info">
                             <div class="game-item-title">${j.titulo}</div>
-                            <div class="game-item-sub">${MESES_PT[calMes-1]} ${calAno}${j.sub ? ' • ' + j.sub : ''}</div>
+                            <div class="game-item-sub">${MESES_PT[calMes - 1]} ${calAno}${j.sub ? ' • ' + j.sub : ''}</div>
                         </div>
                         <span class="game-item-badge ${j.tipo}">${tipoLabel(j.tipo)}</span>
                         ${btnDelete}
@@ -1981,7 +2031,7 @@
 
             container.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 0 2px;">
-                    <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">${MESES_PT[calMes-1]} ${calAno}</span>
+                    <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">${MESES_PT[calMes - 1]} ${calAno}</span>
                     <div style="display: flex; gap: 8px;">
                         <button class="cal-nav-btn" onclick="changeMonth(-1)" title="Mês anterior">&#8249;</button>
                         <button class="cal-nav-btn" onclick="changeMonth(1)" title="Próximo mês">&#8250;</button>
