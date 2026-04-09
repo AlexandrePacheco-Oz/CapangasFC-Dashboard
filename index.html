@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dashboard - Controle de Mensalidade</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,6 +36,8 @@
             display: flex;
             justify-content: center;
             padding: 40px 20px;
+            padding-top: max(40px, env(safe-area-inset-top));
+            padding-bottom: max(40px, env(safe-area-inset-bottom));
             overflow-x: hidden;
             position: relative;
         }
@@ -61,6 +63,12 @@
             max-width: 900px;
             position: relative;
             z-index: 1;
+            padding: 0 5px;
+        }
+        
+        /* Optimization for high resolution (S24, etc) */
+        @media screen and (min-resolution: 2dppx) {
+            body { -webkit-font-smoothing: antialiased; }
         }
 
         /* --- Header Section --- */
@@ -438,7 +446,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        @media (max-width: 850px) {
+        @media (max-width: 1024px) {
             body { padding: 20px 10px; }
             .header h1 { font-size: 1.6rem; }
             .controls { flex-direction: column; gap: 10px; }
