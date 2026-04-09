@@ -625,7 +625,358 @@
                 min-width: 70px;
                 padding: 0 8px;
             }
+
+            /* Calendar responsive */
+            .cal-day {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 0.75rem !important;
+            }
+
+            .cal-day .game-label {
+                font-size: 0.45rem !important;
+            }
+
+            .calendar-weekdays span {
+                font-size: 0.6rem !important;
+            }
+
+            .calendar-month-name {
+                font-size: 2.2rem !important;
+            }
         }
+
+        /* =========================================
+           📅 CALENDAR SECTION
+        ========================================= */
+        .calendar-section {
+            margin-bottom: 25px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .calendar-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 16px 20px 0;
+        }
+
+        .cal-tab {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+        }
+
+        .cal-tab.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .cal-tab.inactive {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-dim);
+            border: 1px solid var(--glass-border);
+        }
+
+        .cal-tab.inactive:hover {
+            background: rgba(255,255,255,0.12);
+            color: var(--text-main);
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px 0;
+        }
+
+        .calendar-header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-month-name {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary-light);
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(0, 123, 255, 0.4);
+        }
+
+        .calendar-year-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .calendar-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cal-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(0, 86, 179, 0.5));
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .cal-nav-btn {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .cal-nav-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .calendar-handle {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-body {
+            padding: 16px 14px;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 8px;
+        }
+
+        .calendar-weekdays span {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            padding: 4px 0;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .cal-day {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            cursor: default;
+            transition: transform 0.15s ease;
+            font-size: 0.85rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .cal-day.other-month {
+            background: rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.2);
+        }
+
+        .cal-day.no-game {
+            background: #1a1e2e;
+            color: var(--text-dim);
+        }
+
+        .cal-day.today {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .cal-day.game-campo {
+            background: var(--primary);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .cal-day.game-futsal {
+            background: #e85d04;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .cal-day.game-cancelado {
+            background: #c0392b;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .cal-day.game-treino {
+            background: #1a7a4a;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .cal-day[class*="game-"]:hover {
+            transform: scale(1.12);
+            filter: brightness(1.15);
+        }
+
+        .cal-day .game-label {
+            font-size: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-top: 1px;
+            text-align: center;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
+            max-width: 38px;
+        }
+
+        /* Tooltip on game days */
+        .cal-day[data-tip]:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111827;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        .calendar-legend {
+            border-top: 1px solid var(--glass-border);
+            padding: 14px 18px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.campo { background: var(--primary); }
+        .legend-dot.futsal { background: #e85d04; }
+        .legend-dot.cancelado { background: #c0392b; }
+        .legend-dot.treino { background: #1a7a4a; }
+
+        /* Games list tab */
+        .games-list {
+            padding: 16px 18px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .games-list.active {
+            display: flex;
+        }
+
+        .game-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            transition: background 0.2s;
+        }
+
+        .game-item:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .game-item-date {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--accent);
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .game-item-info {
+            flex: 1;
+        }
+
+        .game-item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .game-item-sub {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 1px;
+        }
+
+        .game-item-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .game-item-badge.campo { background: rgba(0,86,179,0.25); color: var(--primary-light); }
+        .game-item-badge.futsal { background: rgba(232,93,4,0.25); color: #ff7a2f; }
+        .game-item-badge.cancelado { background: rgba(192,57,43,0.25); color: #e74c3c; }
+        .game-item-badge.treino { background: rgba(26,122,74,0.25); color: #2ecc71; }
     </style>
 </head>
 
@@ -671,6 +1022,103 @@
             <div class="stat-card">
                 <div class="stat-label">Pendentes</div>
                 <div class="stat-value pending" id="statPendentes">0</div>
+            </div>
+        </div>
+
+        <!-- ===== CALENDÁRIO DE JOGOS ===== -->
+        <div class="calendar-section" id="calendarSection">
+
+            <!-- Tabs -->
+            <div class="calendar-tabs">
+                <button class="cal-tab active" id="tabCalendario" onclick="switchCalTab('calendario')">📅 Calendário</button>
+                <button class="cal-tab inactive" id="tabJogos" onclick="switchCalTab('jogos')">⚽ Jogos</button>
+            </div>
+
+            <!-- Calendar View -->
+            <div id="calendarView">
+                <!-- Header -->
+                <div class="calendar-header">
+                    <div class="calendar-header-left">
+                        <div class="calendar-month-name" id="calMonthName">ABRIL</div>
+                        <div class="calendar-year-label">JOGOS <span id="calYear">2026</span></div>
+                    </div>
+                    <div class="calendar-header-right">
+                        <img src="imagem/LogoPng.png" alt="Logo" class="cal-logo" onerror="this.style.display='none'">
+                        <div class="calendar-nav">
+                            <button class="cal-nav-btn" onclick="changeMonth(-1)" title="Mês anterior">&#8249;</button>
+                            <button class="cal-nav-btn" onclick="changeMonth(1)" title="Próximo mês">&#8250;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Handle -->
+                <div style="padding: 2px 20px 0; color: var(--text-dim); font-size: 0.7rem;">@capangas_f.c</div>
+
+                <!-- Calendar Body -->
+                <div class="calendar-body">
+                    <div class="calendar-weekdays">
+                        <span>DOM</span>
+                        <span>SEG</span>
+                        <span>TER</span>
+                        <span>QUA</span>
+                        <span>QUI</span>
+                        <span>SEX</span>
+                        <span>SAB</span>
+                    </div>
+                    <div class="calendar-days" id="calendarDays"></div>
+                </div>
+
+                <!-- Legend -->
+                <div class="calendar-legend" id="calendarLegend"></div>
+            </div>
+
+            <!-- Games List View -->
+            <div class="games-list" id="gamesListView"></div>
+
+            <!-- Admin Panel - Só aparece quando admin está logado -->
+            <div id="calAdminPanel" style="display:none; flex-direction:column; gap:10px; padding:14px 18px; border-top:1px solid var(--glass-border); background:rgba(212,175,55,0.04);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+                    <span style="font-size:0.75rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px;">🔐 Admin — Adicionar Jogo</span>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <input type="number" id="jogoNovoDia" placeholder="Dia" min="1" max="31"
+                        style="width:60px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                    <select id="jogoNovoMes"
+                        style="width:110px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fevereiro</option>
+                        <option value="3">Março</option>
+                        <option value="4" selected>Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                    <input type="number" id="jogoNovoAno" placeholder="Ano" value="2026" min="2024" max="2030"
+                        style="width:70px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                    <select id="jogoNovoTipo"
+                        style="flex:1; min-width:100px; background:#111827; border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                        <option value="campo">⚽ Campo</option>
+                        <option value="futsal">🟠 Futsal</option>
+                        <option value="cancelado">🔴 Cancelado</option>
+                        <option value="treino">🟢 Treino</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <input type="text" id="jogoNovoTitulo" placeholder="Adversário / Título do jogo..."
+                        style="flex:2; min-width:160px; background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                    <input type="text" id="jogoNovoSub" placeholder="Info extra (ex: 11h)"
+                        style="flex:1; min-width:100px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:8px; padding:8px; color:#fff; font-size:0.8rem;">
+                    <button onclick="adicionarJogo()"
+                        style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; font-size:0.8rem; white-space:nowrap; transition:transform 0.2s;"
+                        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        ➕ Adicionar
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -879,6 +1327,9 @@
                 </div>
             `;
             document.getElementById("loginBox").style.display = "none";
+            // Mostrar painel admin do calendário
+            document.getElementById("calAdminPanel").style.display = "flex";
+            renderCalendario();
         }
 
         // =============================================
@@ -906,7 +1357,10 @@
             document.getElementById("loginBox").style.display = "flex";
             document.getElementById("user").value = "";
             document.getElementById("pass").value = "";
+            // Esconder painel admin do calendário
+            document.getElementById("calAdminPanel").style.display = "none";
             render();
+            renderCalendario();
         }
 
         function manualSave() {
@@ -1004,6 +1458,228 @@
         // 🚀 Inicialização
         // =============================================
         carregarDoSheets();
+
+        // =============================================
+        // 📅 CALENDÁRIO DE JOGOS
+        // =============================================
+
+        // Jogos padrão (usados quando não há dados salvos)
+        const jogosPadrao = [
+            { ano: 2026, mes: 4, dia: 4,  tipo: 'campo',    titulo: 'Patos FC',        sub: 'Campo' },
+            { ano: 2026, mes: 4, dia: 5,  tipo: 'cancelado', titulo: 'Festival Futsal', sub: '11h' },
+            { ano: 2026, mes: 4, dia: 12, tipo: 'campo',    titulo: 'West ham Osasco', sub: 'Campo' },
+            { ano: 2026, mes: 4, dia: 18, tipo: 'campo',    titulo: 'Pura Resenha FC', sub: 'Campo' },
+            { ano: 2026, mes: 4, dia: 26, tipo: 'futsal',   titulo: 'União Palmira',   sub: 'Futsal' },
+        ];
+
+        // Carrega jogos do localStorage ou usa padrão
+        let jogos = JSON.parse(localStorage.getItem('capangas_jogos') || 'null') || jogosPadrao;
+
+        function salvarJogos() {
+            localStorage.setItem('capangas_jogos', JSON.stringify(jogos));
+        }
+
+        function adicionarJogo() {
+            const dia   = parseInt(document.getElementById('jogoNovoDia').value);
+            const mes   = parseInt(document.getElementById('jogoNovoMes').value);
+            const ano   = parseInt(document.getElementById('jogoNovoAno').value);
+            const tipo  = document.getElementById('jogoNovoTipo').value;
+            const titulo = document.getElementById('jogoNovoTitulo').value.trim();
+            const sub   = document.getElementById('jogoNovoSub').value.trim();
+
+            if (!dia || !mes || !ano || !titulo) {
+                showToast('⚠️ Preencha dia, mês, ano e título!');
+                return;
+            }
+            if (dia < 1 || dia > 31 || mes < 1 || mes > 12) {
+                showToast('⚠️ Data inválida!');
+                return;
+            }
+
+            jogos.push({ ano, mes, dia, tipo, titulo, sub });
+            salvarJogos();
+
+            // Limpar campos
+            document.getElementById('jogoNovoTitulo').value = '';
+            document.getElementById('jogoNovoSub').value = '';
+            document.getElementById('jogoNovoDia').value = '';
+
+            // Navega para o mês do jogo adicionado
+            calAno = ano;
+            calMes = mes;
+            renderCalendario();
+            if (calTab === 'jogos') renderGamesList();
+            showToast('📅 Jogo adicionado!');
+        }
+
+        function removerJogo(idx) {
+            if (!adminLogado) return;
+            const j = jogos[idx];
+            if (confirm(`Remover "${j.titulo}" do dia ${j.dia}/${j.mes}/${j.ano}?`)) {
+                jogos.splice(idx, 1);
+                salvarJogos();
+                renderCalendario();
+                if (calTab === 'jogos') renderGamesList();
+                showToast('🗑️ Jogo removido!');
+            }
+        }
+
+        const MESES_PT = [
+            'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+            'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'
+        ];
+
+        let calAno  = new Date().getFullYear();
+        let calMes  = new Date().getMonth() + 1; // 1-based
+        let calTab  = 'calendario';
+
+        function getJogosDia(ano, mes, dia) {
+            return jogos.filter(j => j.ano === ano && j.mes === mes && j.dia === dia);
+        }
+
+        function getJogosMes(ano, mes) {
+            return jogos
+                .filter(j => j.ano === ano && j.mes === mes)
+                .sort((a, b) => a.dia - b.dia);
+        }
+
+        function changeMonth(delta) {
+            calMes += delta;
+            if (calMes > 12) { calMes = 1;  calAno++; }
+            if (calMes < 1)  { calMes = 12; calAno--; }
+            renderCalendario();
+        }
+
+        function switchCalTab(tab) {
+            calTab = tab;
+            document.getElementById('tabCalendario').className = 'cal-tab ' + (tab === 'calendario' ? 'active' : 'inactive');
+            document.getElementById('tabJogos').className      = 'cal-tab ' + (tab === 'jogos'      ? 'active' : 'inactive');
+            document.getElementById('calendarView').style.display  = tab === 'calendario' ? 'block' : 'none';
+            document.getElementById('gamesListView').className = 'games-list' + (tab === 'jogos' ? ' active' : '');
+            if (tab === 'jogos') renderGamesList();
+        }
+
+        function tipoLabel(tipo) {
+            const labels = { campo: 'Campo', futsal: 'Futsal', cancelado: 'Cancelado', treino: 'Treino' };
+            return labels[tipo] || tipo;
+        }
+
+        function renderCalendario() {
+            // Header
+            document.getElementById('calMonthName').textContent = MESES_PT[calMes - 1].toUpperCase();
+            document.getElementById('calYear').textContent = calAno;
+
+            const container = document.getElementById('calendarDays');
+            container.innerHTML = '';
+
+            const hoje = new Date();
+            const primeiroDia = new Date(calAno, calMes - 1, 1).getDay(); // 0=Dom
+            const diasNoMes   = new Date(calAno, calMes, 0).getDate();
+
+            // Dias do mês anterior para preencher a grade
+            const mesAnterior = calMes === 1 ? 12 : calMes - 1;
+            const anoAnterior = calMes === 1 ? calAno - 1 : calAno;
+            const diasMesAnt  = new Date(anoAnterior, mesAnterior, 0).getDate();
+
+            const totalCelulas = Math.ceil((primeiroDia + diasNoMes) / 7) * 7;
+
+            for (let i = 0; i < totalCelulas; i++) {
+                const div = document.createElement('div');
+
+                if (i < primeiroDia) {
+                    // Dias do mês anterior
+                    const dia = diasMesAnt - primeiroDia + 1 + i;
+                    div.className = 'cal-day other-month';
+                    div.innerHTML = `<span>${dia}</span>`;
+                } else {
+                    const dia = i - primeiroDia + 1;
+                    if (dia > diasNoMes) {
+                        // Dias do próximo mês
+                        div.className = 'cal-day other-month';
+                        div.innerHTML = `<span>${dia - diasNoMes}</span>`;
+                    } else {
+                        const jogosNoDia = getJogosDia(calAno, calMes, dia);
+                        const isHoje = hoje.getFullYear() === calAno &&
+                                       hoje.getMonth() + 1 === calMes &&
+                                       hoje.getDate() === dia;
+
+                        if (jogosNoDia.length > 0) {
+                            const jogo = jogosNoDia[0];
+                            div.className = `cal-day game-${jogo.tipo}${isHoje ? ' today' : ''}`;
+                            div.setAttribute('data-tip', jogo.titulo + (jogo.sub ? ' (' + jogo.sub + ')' : ''));
+                            div.innerHTML = `<span>${dia}</span><span class="game-label">${tipoLabel(jogo.tipo)}</span>`;
+                        } else {
+                            div.className = `cal-day no-game${isHoje ? ' today' : ''}`;
+                            div.innerHTML = `<span>${dia}</span>`;
+                        }
+                    }
+                }
+                container.appendChild(div);
+            }
+
+            renderLegend();
+        }
+
+        function renderLegend() {
+            const jogosDoMes = getJogosMes(calAno, calMes);
+            const legend = document.getElementById('calendarLegend');
+
+            if (jogosDoMes.length === 0) {
+                legend.innerHTML = '<span style="color: var(--text-dim); font-size: 0.8rem; grid-column: 1/-1;">Nenhum jogo neste mês.</span>';
+                return;
+            }
+
+            legend.innerHTML = jogosDoMes.map(j => {
+                const idx = jogos.indexOf(j);
+                const btnDelete = adminLogado
+                    ? `<button onclick="removerJogo(${idx})" title="Remover jogo" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.85rem;padding:0 0 0 6px;line-height:1;">✕</button>`
+                    : '';
+                return `<div class="legend-item">
+                    <span class="legend-dot ${j.tipo}"></span>
+                    <span style="flex:1;"><strong>${j.dia < 10 ? '0'+j.dia : j.dia}</strong> - ${j.titulo}${j.sub ? ' (' + j.sub + ')' : ''}</span>
+                    ${btnDelete}
+                </div>`;
+            }).join('');
+        }
+
+        function renderGamesList() {
+            const container = document.getElementById('gamesListView');
+            const jogosDoMes = getJogosMes(calAno, calMes);
+
+            if (jogosDoMes.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-dim); text-align: center; padding: 20px;">Nenhum jogo neste mês.</p>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 0 2px;">
+                    <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">${MESES_PT[calMes-1]} ${calAno}</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="cal-nav-btn" onclick="changeMonth(-1)" title="Mês anterior">&#8249;</button>
+                        <button class="cal-nav-btn" onclick="changeMonth(1)" title="Próximo mês">&#8250;</button>
+                    </div>
+                </div>
+                ${jogosDoMes.map(j => {
+                    const idx = jogos.indexOf(j);
+                    const btnDelete = adminLogado
+                        ? `<button class="action-btn btn-delete" style="min-width:60px;height:28px;font-size:0.65rem;" onclick="removerJogo(${idx})">Excluir</button>`
+                        : '';
+                    return `
+                    <div class="game-item">
+                        <div class="game-item-date">${j.dia < 10 ? '0'+j.dia : j.dia}</div>
+                        <div class="game-item-info">
+                            <div class="game-item-title">${j.titulo}</div>
+                            <div class="game-item-sub">${MESES_PT[calMes-1]} ${calAno}${j.sub ? ' • ' + j.sub : ''}</div>
+                        </div>
+                        <span class="game-item-badge ${j.tipo}">${tipoLabel(j.tipo)}</span>
+                        ${btnDelete}
+                    </div>`;
+                }).join('')}
+            `;
+        }
+
+        // Iniciar o calendário no mês atual
+        renderCalendario();
     </script>
 
 </body>
