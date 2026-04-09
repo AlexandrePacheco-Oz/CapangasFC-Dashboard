@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dashboard - Controle de Mensalidade</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -65,10 +66,12 @@
             z-index: 1;
             padding: 0 5px;
         }
-        
+
         /* Optimization for high resolution (S24, etc) */
         @media screen and (min-resolution: 2dppx) {
-            body { -webkit-font-smoothing: antialiased; }
+            body {
+                -webkit-font-smoothing: antialiased;
+            }
         }
 
         /* --- Header Section --- */
@@ -446,35 +449,126 @@
         }
 
         @media (max-width: 1024px) {
-            body { padding: 10px 8px; }
-            .header { margin-bottom: 10px; }
-            .header h1 { font-size: 1.2rem; margin-bottom: 2px; }
-            .header p { font-size: 0.8rem; margin-bottom: 8px; }
-            .logo-header { width: 50px; height: 50px; margin-bottom: 5px; }
-            .controls { flex-direction: column; gap: 6px; margin-bottom: 12px; }
-            .login-section { width: 100%; justify-content: space-between; gap: 5px; padding: 4px; border-radius: 8px; }
-            .login-section input { width: 100%; height: 28px; font-size: 0.7rem; padding: 4px 8px; }
-            .btn-login { height: 28px; padding: 0 10px; font-size: 0.7rem; }
-            
-            .stats-grid { 
-                grid-template-columns: repeat(3, 1fr); 
-                gap: 5px; 
-                margin-bottom: 12px; 
+            body {
+                padding: 10px 8px;
             }
-            .stat-card { padding: 6px 4px; border-radius: 10px; border-left-width: 2px; }
-            .stat-label { font-size: 0.55rem; letter-spacing: 0; }
-            .stat-value { font-size: 0.85rem; }
-            
-            .qr-code { width: 90px; height: 90px; }
-            .btn-view-qr { display: block; margin: 5px auto 0 auto; padding: 2px 8px; font-size: 0.6rem; }
-            .pix-badge { padding: 4px 10px; font-size: 0.7rem; }
-            #searchInput { height: 32px; padding: 0 12px; font-size: 0.8rem; }
+
+            .header {
+                margin-bottom: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 2px;
+            }
+
+            .header p {
+                font-size: 0.8rem;
+                margin-bottom: 8px;
+            }
+
+            .logo-header {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 5px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+
+            .login-section {
+                width: 100%;
+                justify-content: space-between;
+                gap: 5px;
+                padding: 4px;
+                border-radius: 8px;
+            }
+
+            .login-section input {
+                width: 100%;
+                height: 28px;
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+
+            .btn-login {
+                height: 28px;
+                padding: 0 10px;
+                font-size: 0.7rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+                margin-bottom: 12px;
+            }
+
+            .stat-card {
+                padding: 6px 4px;
+                border-radius: 10px;
+                border-left-width: 2px;
+            }
+
+            .stat-label {
+                font-size: 0.55rem;
+                letter-spacing: 0;
+            }
+
+            .stat-value {
+                font-size: 0.85rem;
+            }
+
+            .qr-code {
+                width: 90px;
+                height: 90px;
+            }
+
+            .btn-view-qr {
+                display: block;
+                margin: 5px auto 0 auto;
+                padding: 2px 8px;
+                font-size: 0.6rem;
+            }
+
+            .pix-badge {
+                padding: 4px 10px;
+                font-size: 0.7rem;
+            }
+
+            #searchInput {
+                height: 32px;
+                padding: 0 12px;
+                font-size: 0.8rem;
+            }
 
             /* Table to Cards */
-            table, thead, tbody, th, td, tr { display: block; }
-            thead { display: none; }
-            .table-container { background: none; border: none; box-shadow: none; overflow: visible; }
-            table { min-width: 0; }
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead {
+                display: none;
+            }
+
+            .table-container {
+                background: none;
+                border: none;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            table {
+                min-width: 0;
+            }
+
             tr {
                 background: var(--glass-bg);
                 border: 1px solid var(--glass-border);
@@ -483,6 +577,7 @@
                 padding: 8px 12px;
                 backdrop-filter: blur(10px);
             }
+
             td {
                 border-bottom: none;
                 padding: 5px 0;
@@ -490,6 +585,7 @@
                 justify-content: space-between;
                 align-items: center;
             }
+
             td:before {
                 content: attr(data-label);
                 font-size: 0.7rem;
@@ -499,24 +595,30 @@
                 flex-shrink: 0;
                 margin-right: 10px;
             }
+
             /* Force badges and buttons to NEVER disappear */
-            td > span,
-            td > div {
+            td>span,
+            td>div {
                 flex-shrink: 0;
             }
+
             .badge {
                 font-size: 0.7rem;
                 padding: 4px 10px;
             }
-            td:first-child { 
-                font-size: 0.95rem; 
-                border-bottom: 1px solid var(--glass-border); 
-                margin-bottom: 4px; 
-                padding-bottom: 6px; 
-                font-weight: 700; 
+
+            td:first-child {
+                font-size: 0.95rem;
+                border-bottom: 1px solid var(--glass-border);
+                margin-bottom: 4px;
+                padding-bottom: 6px;
+                font-weight: 700;
             }
-            td:first-child:before { display: none; }
-            
+
+            td:first-child:before {
+                display: none;
+            }
+
             .action-btn {
                 height: 30px;
                 font-size: 0.7rem;
@@ -605,7 +707,9 @@
         // =============================================
         // 🔗 GOOGLE SHEETS API - Cole a URL do seu Web App aqui
         // =============================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbx2gyt2BCm1BJ_CITCfexqkvUTkuM8cnDDgdY0b2LhJ3t-aJ5xhpkU7qv5mAgQi3OD_iA/exec';
+        // A URL está ofuscada em Base64 para evitar raspagem básica
+        const _apiToken = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4Mmd5dDJCQ20xQkpfQ0lUQ2ZleHFrdlVUa3VNNGNuRERnZFkwYjJMaEozdC1hSjV4aHBrVTdxdjVtQWdRaTNPRF9pQS9leGVj';
+        const API_URL = atob(_apiToken);
 
         let adminLogado = false;
         let sincronizando = false;
@@ -673,7 +777,7 @@
             try {
                 document.getElementById("lista").innerHTML = `
                     <tr><td colspan="3" style="text-align: center; padding: 30px; color: var(--text-dim);">
-                        ⏳ Carregando dados da planilha...
+                        ⏳ Carregando dados...
                     </td></tr>`;
 
                 const response = await fetch(API_URL);
@@ -785,12 +889,12 @@
             const input = document.getElementById("novoJogador");
             const nome = input.value.trim();
             if (!nome) return;
-            
+
             pessoas.push({ nome: nome, pago: false });
             input.value = "";
             salvar();
             render();
-            
+
             // Sincroniza com Google Sheets
             enviarParaSheets({ action: 'add', nome: nome });
             showToast("👤 Jogador adicionado!");
@@ -818,7 +922,7 @@
                 pessoas.splice(index, 1);
                 salvar();
                 render();
-                
+
                 // Sincroniza com Google Sheets
                 enviarParaSheets({ action: 'remove', index: removedIndex });
                 showToast("🗑️ Jogador removido!");
@@ -830,7 +934,7 @@
             pessoas[i].pago = !pessoas[i].pago;
             salvar();
             render();
-            
+
             // Sincroniza com Google Sheets
             enviarParaSheets({ action: 'toggle', index: i, value: pessoas[i].pago });
         }
