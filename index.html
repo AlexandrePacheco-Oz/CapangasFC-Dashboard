@@ -213,8 +213,8 @@
         }
 
         .game-alert-btns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            justify-content: center;
             gap: 12px;
         }
 
@@ -2190,18 +2190,15 @@
             if (jogoHoje) {
                 const rawEndereco = (jogoHoje.endereco || "").trim();
                 
-                // Lógica inteligente de Link: se já for um link, usa direto. Se não, gera busca.
+                // Lógica de Link: Gera busca no Google Maps
                 let mapsLink = "";
-                let wazeLink = "";
 
                 if (rawEndereco) {
                     if (rawEndereco.toLowerCase().startsWith('http')) {
                         mapsLink = rawEndereco;
-                        wazeLink = rawEndereco;
                     } else {
                         const encoded = encodeURIComponent(rawEndereco);
                         mapsLink = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-                        wazeLink = `https://waze.com/ul?q=${encoded}`;
                     }
                 }
 
@@ -2209,13 +2206,9 @@
                 if (rawEndereco) {
                     gpsButtons = `
                         <div class="game-alert-btns">
-                            <a href="${mapsLink}" target="_blank" class="gps-btn">
+                            <a href="${mapsLink}" target="_blank" class="gps-btn" style="width: 100%;">
                                 <span style="font-size:1.5rem">📍</span>
-                                Google Maps
-                            </a>
-                            <a href="${wazeLink}" target="_blank" class="gps-btn">
-                                <span style="font-size:1.5rem">🚗</span>
-                                Waze
+                                Abrir no Google Maps
                             </a>
                         </div>
                     `;
