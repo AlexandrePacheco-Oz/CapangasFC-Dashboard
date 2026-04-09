@@ -1525,6 +1525,16 @@
             enviarParaSheets({ action: 'toggle', index: i, value: pessoas[i].pago });
         }
 
+        function alterarPosicao(i, novaPosicao) {
+            if (!adminLogado) return;
+            pessoas[i].posicao = novaPosicao;
+            salvar();
+            render();
+            // Auto-sync a lista inteira, pois a action 'save' sobrepõe (overwrite) tudo
+            enviarParaSheets({ action: 'save', data: pessoas });
+            showToast("🔄 Posição atualizada e salva!");
+        }
+
         // =============================================
         // 📋 PIX
         // =============================================
@@ -1559,7 +1569,18 @@
                         <tr>
                             <td style="font-weight: 500;">${p.nome}</td>
                             <td data-label="Posição">
-                                <span style="font-size: 0.75rem; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--glass-border); color: #ccc;">${p.posicao || '-'}</span>
+                                ${adminLogado ? `
+                                <select onchange="alterarPosicao(${i}, this.value)" style="font-size: 0.75rem; background: #111827; padding: 4px; border-radius: 6px; border: 1px solid var(--accent); color: #fff;">
+                                    <option value="Goleiro" ${p.posicao == 'Goleiro' ? 'selected' : ''}>Goleiro</option>
+                                    <option value="Fixo/Zagueiro" ${p.posicao == 'Fixo/Zagueiro' ? 'selected' : ''}>Fixo/Zagueiro</option>
+                                    <option value="Ala/Lateral" ${p.posicao == 'Ala/Lateral' ? 'selected' : ''}>Ala/Lateral</option>
+                                    <option value="Meio-Campo" ${p.posicao == 'Meio-Campo' ? 'selected' : ''}>Meio-Campo</option>
+                                    <option value="Pivô/Ataque" ${p.posicao == 'Pivô/Ataque' ? 'selected' : ''}>Pivô/Ataque</option>
+                                    <option value="Coringa" ${p.posicao == 'Coringa' || !p.posicao ? 'selected' : ''}>Coringa</option>
+                                </select>` 
+                                : 
+                                `<span style="font-size: 0.75rem; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--glass-border); color: #ccc;">${p.posicao || 'Coringa'}</span>`
+                                }
                             </td>
                             <td data-label="Status">
                                 <span class="badge ${p.pago ? 'pago' : 'pendente'}">
