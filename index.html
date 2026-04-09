@@ -602,7 +602,13 @@
     </div>
 
     <script>
+        // =============================================
+        // 🔗 GOOGLE SHEETS API - Cole a URL do seu Web App aqui
+        // =============================================
+        const API_URL = ''; // ← COLE SUA URL DO GOOGLE APPS SCRIPT AQUI
+
         let adminLogado = false;
+        let sincronizando = false;
 
         function openModal() {
             document.getElementById("qrModal").classList.add("active");
@@ -614,7 +620,8 @@
             document.body.style.overflow = "auto";
         }
 
-        let pessoas = [
+        // Dados padrão (usado apenas se não houver dados na planilha nem no cache)
+        let pessoasPadrao = [
             { nome: "Caiado", pago: false },
             { nome: "Silva", pago: true },
             { nome: "Apoli", pago: false },
@@ -640,16 +647,95 @@
             { nome: "Hailton", pago: false }
         ];
 
-        function salvar() {
+        let pessoas = [...pessoasPadrao];
+
+        // =============================================
+        // 📡 Funções de comunicação com Google Sheets
+        // =============================================
+
+        function showToast(msg) {
+            const toast = document.getElementById("pixToast");
+            toast.innerText = msg;
+            toast.classList.add("active");
+            setTimeout(() => {
+                toast.classList.remove("active");
+                setTimeout(() => { toast.innerText = "✅ Chave PIX copiada!"; }, 300);
+            }, 2000);
+        }
+
+        // Carrega dados da planilha Google
+        async function carregarDoSheets() {
+            if (!API_URL) {
+                carregarDoCache();
+                return;
+            }
+
+            try {
+                document.getElementById("lista").innerHTML = `
+                    <tr><td colspan="3" style="text-align: center; padding: 30px; color: var(--text-dim);">
+                        ⏳ Carregando dados da planilha...
+                    </td></tr>`;
+
+                const response = await fetch(API_URL);
+                const data = await response.json();
+
+                if (data && Array.isArray(data) && data.length > 0) {
+                    pessoas = data;
+                    salvarNoCache(); // Salva cache local para fallback
+                    render();
+                } else {
+                    carregarDoCache();
+                }
+            } catch (err) {
+                console.warn("⚠️ Falha ao conectar com Google Sheets, usando cache local:", err);
+                carregarDoCache();
+                showToast("⚠️ Offline - usando dados locais");
+            }
+        }
+
+        // Envia dados para a planilha Google
+        async function enviarParaSheets(body) {
+            if (!API_URL || sincronizando) return;
+
+            sincronizando = true;
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(body),
+                    mode: 'no-cors'
+                });
+            } catch (err) {
+                console.warn("⚠️ Falha ao sincronizar com Google Sheets:", err);
+            } finally {
+                sincronizando = false;
+            }
+        }
+
+        // =============================================
+        // 💾 Cache Local (fallback quando offline)
+        // =============================================
+
+        function salvarNoCache() {
             localStorage.setItem("mensalidade", JSON.stringify(pessoas));
         }
 
-        function carregar() {
+        function carregarDoCache() {
             let dados = localStorage.getItem("mensalidade");
             if (dados) {
                 pessoas = JSON.parse(dados);
             }
+            render();
         }
+
+        // Salva no cache + sincroniza com Sheets
+        function salvar() {
+            salvarNoCache();
+        }
+
+        // =============================================
+        // 🔐 Autenticação Admin
+        // =============================================
 
         async function getHash(string) {
             const msgUint8 = new TextEncoder().encode(string);
@@ -691,6 +777,10 @@
             document.getElementById("loginBox").style.display = "none";
         }
 
+        // =============================================
+        // 👥 CRUD - Gerenciamento de Jogadores
+        // =============================================
+
         function adicionarPessoa() {
             const input = document.getElementById("novoJogador");
             const nome = input.value.trim();
@@ -701,15 +791,9 @@
             salvar();
             render();
             
-            // Feedback
-            const toast = document.getElementById("pixToast");
-            const originalText = toast.innerText;
-            toast.innerText = "👤 Jogador adicionado!";
-            toast.classList.add("active");
-            setTimeout(() => {
-                toast.classList.remove("active");
-                setTimeout(() => { toast.innerText = originalText; }, 300);
-            }, 2000);
+            // Sincroniza com Google Sheets
+            enviarParaSheets({ action: 'add', nome: nome });
+            showToast("👤 Jogador adicionado!");
         }
 
         function logout() {
@@ -723,34 +807,48 @@
 
         function manualSave() {
             salvar();
-            const toast = document.getElementById("pixToast");
-            const originalText = toast.innerText;
-            toast.innerText = "💾 Alterações salvas!";
-            toast.classList.add("active");
-            setTimeout(() => {
-                toast.classList.remove("active");
-                setTimeout(() => { toast.innerText = originalText; }, 300);
-            }, 2000);
+            // Sincroniza todos os dados com a planilha
+            enviarParaSheets({ action: 'save', data: pessoas });
+            showToast("💾 Salvo na planilha!");
         }
 
         function removerPessoa(index) {
             if (confirm(`Remover "${pessoas[index].nome}" da lista?`)) {
+                const removedIndex = index;
                 pessoas.splice(index, 1);
                 salvar();
                 render();
+                
+                // Sincroniza com Google Sheets
+                enviarParaSheets({ action: 'remove', index: removedIndex });
+                showToast("🗑️ Jogador removido!");
             }
         }
+
+        function toggle(i) {
+            if (!adminLogado) return;
+            pessoas[i].pago = !pessoas[i].pago;
+            salvar();
+            render();
+            
+            // Sincroniza com Google Sheets
+            enviarParaSheets({ action: 'toggle', index: i, value: pessoas[i].pago });
+        }
+
+        // =============================================
+        // 📋 PIX
+        // =============================================
 
         function copyPIX() {
             const pixKey = document.getElementById("pixKey").innerText;
             navigator.clipboard.writeText(pixKey).then(() => {
-                const toast = document.getElementById("pixToast");
-                toast.classList.add("active");
-                setTimeout(() => {
-                    toast.classList.remove("active");
-                }, 2000);
+                showToast("✅ Chave PIX copiada!");
             });
         }
+
+        // =============================================
+        // 🎨 Renderização
+        // =============================================
 
         function render() {
             let search = document.getElementById("searchInput").value.toLowerCase();
@@ -798,15 +896,10 @@
             document.getElementById("statPendentes").innerText = pessoas.length - paidCount;
         }
 
-        function toggle(i) {
-            if (!adminLogado) return;
-            pessoas[i].pago = !pessoas[i].pago;
-            salvar();
-            render();
-        }
-
-        carregar();
-        render();
+        // =============================================
+        // 🚀 Inicialização
+        // =============================================
+        carregarDoSheets();
     </script>
 
 </body>
