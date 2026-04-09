@@ -2177,27 +2177,42 @@
             const m = hoje.getMonth() + 1;
             const y = hoje.getFullYear();
 
-            // Procura jogo exatamente hoje
-            const jogoHoje = jogos.find(j => parseInt(j.dia) === d && parseInt(j.mes) === m && parseInt(j.ano) === y);
+            // Busca jogo hoje (convertendo para número para garantir comparação)
+            const jogoHoje = jogos.find(j => 
+                parseInt(j.dia) === d && 
+                parseInt(j.mes) === m && 
+                parseInt(j.ano) === y
+            );
+            
             const alertDiv = document.getElementById('hojeAlert');
+            if (!alertDiv) return;
 
-            if (jogoHoje && jogoHoje.endereco) {
-                const encodedAddr = encodeURIComponent(jogoHoje.endereco);
+            if (jogoHoje) {
+                const endereco = (jogoHoje.endereco || "").trim();
+                const encodedAddr = encodeURIComponent(endereco);
+                
+                let gpsButtons = "";
+                if (endereco) {
+                    gpsButtons = `
+                        <div class="game-alert-btns">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodedAddr}" target="_blank" class="gps-btn">
+                                <span style="font-size:1.5rem">📍</span>
+                                Google Maps
+                            </a>
+                            <a href="https://waze.com/ul?q=${encodedAddr}" target="_blank" class="gps-btn">
+                                <span style="font-size:1.5rem">🚗</span>
+                                Waze
+                            </a>
+                        </div>
+                    `;
+                }
+
                 document.getElementById('hojeAlertContent').innerHTML = `
                     <div class="game-alert-icon">⚽</div>
                     <h3>HOJE TEM JOGO!</h3>
-                    <p><strong>${jogoHoje.titulo}</strong><br>${jogoHoje.sub || ''}<br><span style="font-size:0.8rem;color:var(--accent)">${jogoHoje.endereco}</span></p>
-                    
-                    <div class="game-alert-btns">
-                        <a href="https://www.google.com/maps/search/?api=1&query=${encodedAddr}" target="_blank" class="gps-btn">
-                            <span style="font-size:1.5rem">📍</span>
-                            Google Maps
-                        </a>
-                        <a href="https://waze.com/ul?q=${encodedAddr}" target="_blank" class="gps-btn">
-                            <span style="font-size:1.5rem">🚗</span>
-                            Waze
-                        </a>
-                    </div>
+                    <p><strong>${jogoHoje.titulo}</strong><br>${jogoHoje.sub || ''}
+                    ${endereco ? `<br><span style="font-size:0.8rem;color:var(--accent)">${endereco}</span>` : ''}</p>
+                    ${gpsButtons}
                 `;
                 alertDiv.style.display = 'flex';
             } else {
