@@ -1,0 +1,13 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Workspace files
+.gemini/
+.antigravity/
+brain/
+implementation_plan.md*
+task.md*
+walkthrough.md*
+*.png.metadata.json
+*.webp.metadata.json
