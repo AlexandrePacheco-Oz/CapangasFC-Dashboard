@@ -149,67 +149,96 @@
             font-weight: 700;
         }
 
-        /* --- Alerta de Jogo Hoje --- */
+        /* --- Alerta de Jogo Hoje (Modal/Pop-up) --- */
         .game-alert {
-            display: none; /* Ativado via JS */
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 86, 179, 0.15));
-            border: 1px solid var(--accent);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            animation: pulse-alert 2s infinite alternate;
-        }
-
-        @keyframes pulse-alert {
-            from { box-shadow: 0 0 10px rgba(212, 175, 55, 0.1); }
-            to { box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); }
-        }
-
-        .game-alert-content {
-            display: flex;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 3000;
+            backdrop-filter: blur(8px);
             align-items: center;
-            justify-content: space-between;
-            gap: 15px;
+            justify-content: center;
         }
 
-        .game-alert-info h3 {
+        .game-alert-modal {
+            background: linear-gradient(145deg, #1a2233, #111827);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.2);
+            animation: zoom-in 0.3s ease-out;
+            text-align: center;
+        }
+
+        @keyframes zoom-in {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-alert {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-alert:hover {
             color: var(--accent);
-            font-size: 1.1rem;
-            margin-bottom: 4px;
         }
 
-        .game-alert-info p {
-            font-size: 0.85rem;
+        .game-alert-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px var(--accent));
+        }
+
+        .game-alert-modal h3 {
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .game-alert-modal p {
+            font-size: 0.95rem;
             color: var(--text-main);
+            margin-bottom: 24px;
+            line-height: 1.4;
         }
 
         .game-alert-btns {
-            display: flex;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
         .gps-btn {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 12px;
+            padding: 12px;
             color: #fff;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 700;
             text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
 
         .gps-btn:hover {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
+            transform: translateY(-3px);
         }
 
         /* --- Stats Grid --- */
@@ -1231,10 +1260,13 @@
             </div>
         </div>
 
-        <!-- Alerta Dinâmico: Jogo Hoje -->
-        <div id="hojeAlert" class="game-alert">
-            <div class="game-alert-content" id="hojeAlertContent">
-                <!-- Preenchido via JS -->
+        <!-- Alerta Dinâmico: Jogo Hoje (Modal) -->
+        <div id="hojeAlert" class="game-alert" onclick="this.style.display='none'">
+            <div class="game-alert-modal" onclick="event.stopPropagation()">
+                <span class="close-alert" onclick="document.getElementById('hojeAlert').style.display='none'">&times;</span>
+                <div id="hojeAlertContent">
+                    <!-- Preenchido via JS -->
+                </div>
             </div>
         </div>
 
@@ -2152,20 +2184,22 @@
             if (jogoHoje && jogoHoje.endereco) {
                 const encodedAddr = encodeURIComponent(jogoHoje.endereco);
                 document.getElementById('hojeAlertContent').innerHTML = `
-                    <div class="game-alert-info">
-                        <h3>📢 JOGO HOJE: ${jogoHoje.titulo}</h3>
-                        <p>${jogoHoje.sub || ''} • ${jogoHoje.endereco}</p>
-                    </div>
+                    <div class="game-alert-icon">⚽</div>
+                    <h3>HOJE TEM JOGO!</h3>
+                    <p><strong>${jogoHoje.titulo}</strong><br>${jogoHoje.sub || ''}<br><span style="font-size:0.8rem;color:var(--accent)">${jogoHoje.endereco}</span></p>
+                    
                     <div class="game-alert-btns">
                         <a href="https://www.google.com/maps/search/?api=1&query=${encodedAddr}" target="_blank" class="gps-btn">
-                            📍 Google Maps
+                            <span style="font-size:1.5rem">📍</span>
+                            Google Maps
                         </a>
                         <a href="https://waze.com/ul?q=${encodedAddr}" target="_blank" class="gps-btn">
-                            🚗 Waze
+                            <span style="font-size:1.5rem">🚗</span>
+                            Waze
                         </a>
                     </div>
                 `;
-                alertDiv.style.display = 'block';
+                alertDiv.style.display = 'flex';
             } else {
                 alertDiv.style.display = 'none';
             }
