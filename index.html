@@ -1303,7 +1303,7 @@
             
             if (posEditIndex === 'novo') {
                 document.getElementById('novoJogadorPosicaoHidden').value = strVal;
-                document.getElementById('btnEscolherPosicao').innerText = selecionados.length > 0 ? \`🛡️ Posições (\${selecionados.length})\` : '🛡️ Posições (0)';
+                document.getElementById('btnEscolherPosicao').innerText = selecionados.length > 0 ? `🛡️ Posições (${selecionados.length})` : '🛡️ Posições (0)';
             } else {
                 pessoas[posEditIndex].posicao = strVal;
                 salvar();
