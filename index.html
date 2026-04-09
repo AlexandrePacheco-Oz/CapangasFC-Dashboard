@@ -608,13 +608,44 @@
 
             if (u === "admin" && userHash === adminHash) {
                 adminLogado = true;
-                document.getElementById("statusLogin").innerHTML = "<span style='color: var(--success)'>✅ Modo Admin Ativado</span>";
-                document.getElementById("loginBox").style.display = "none";
+                showAdminUI();
             } else {
                 document.getElementById("statusLogin").innerHTML = "<span style='color: var(--danger)'>❌ Login inválido</span>";
             }
 
             render();
+        }
+
+        function showAdminUI() {
+            document.getElementById("statusLogin").innerHTML = `
+                <div style="display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
+                    <span style='color: var(--success); font-size: 0.8rem;'>✅ Modo Admin Ativado</span>
+                    <button class="action-btn" style="background: var(--success); color: #000; font-weight: 700;" onclick="manualSave()">💾 Salvar</button>
+                    <button class="action-btn" style="background: var(--danger); color: #fff; font-weight: 700;" onclick="logout()">🏃 Sair</button>
+                </div>
+            `;
+            document.getElementById("loginBox").style.display = "none";
+        }
+
+        function logout() {
+            adminLogado = false;
+            document.getElementById("statusLogin").innerHTML = "";
+            document.getElementById("loginBox").style.display = "flex";
+            document.getElementById("user").value = "";
+            document.getElementById("pass").value = "";
+            render();
+        }
+
+        function manualSave() {
+            salvar();
+            const toast = document.getElementById("pixToast");
+            const originalText = toast.innerText;
+            toast.innerText = "💾 Alterações salvas!";
+            toast.classList.add("active");
+            setTimeout(() => {
+                toast.classList.remove("active");
+                setTimeout(() => { toast.innerText = originalText; }, 300);
+            }, 2000);
         }
 
         function copyPIX() {
