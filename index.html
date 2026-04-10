@@ -1555,9 +1555,17 @@
         // =============================================
         // 👁️ Ocultar Valores e Painel Admin
         // =============================================
-        let isBlurred = false;
-        function toggleVisibility() {
-            isBlurred = !isBlurred;
+        let isBlurred = localStorage.getItem('capangas_isBlurred') === 'true';
+
+        function toggleVisibility(forcedValue) {
+            if (forcedValue !== undefined) {
+                isBlurred = forcedValue;
+            } else {
+                isBlurred = !isBlurred;
+            }
+            
+            localStorage.setItem('capangas_isBlurred', isBlurred);
+
             document.querySelectorAll('.stat-value').forEach(el => {
                 if (isBlurred) {
                     el.style.filter = "blur(8px)";
@@ -2274,6 +2282,9 @@
             render();
             renderCalendario();
             verificarJogoHoje();
+            
+            // 1.1 Aplica estado do olho salvo
+            toggleVisibility(isBlurred);
 
             // 2. Dispara a sincronização em paralelo se houver internet
             if (navigator.onLine && API_URL) {
