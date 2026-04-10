@@ -439,6 +439,39 @@
             color: var(--danger);
         }
 
+        .badge.capitao {
+            background: var(--danger);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-left: 8px;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .row-captain {
+            border: 2px solid var(--danger) !important;
+            background: rgba(255, 77, 77, 0.05) !important;
+        }
+
+        /* For desktop table row highlight */
+        tr.row-captain td {
+            border-top: 1px solid var(--danger);
+            border-bottom: 1px solid var(--danger);
+        }
+        tr.row-captain td:first-child {
+            border-left: 1px solid var(--danger);
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        tr.row-captain td:last-child {
+            border-right: 1px solid var(--danger);
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
         .action-btn {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -1687,7 +1720,21 @@
                 const data = await response.json();
 
                 if (data && Array.isArray(data) && data.length > 0 && data[0].nome !== undefined) {
-                    pessoas = data;
+                    // Recupera o nome do capitão do cache local para não perdê-lo se a planilha não tiver a coluna
+                    const cachedCaptainName = localStorage.getItem("capangas_capitao_nome");
+                    
+                    pessoas = data.map(p => {
+                        // Se o dado baixado já tiver 'capitao: true', deixa. Senão, confere pelo nome salvo.
+                        if (p.capitao === true || p.capitao === "TRUE") {
+                            p.capitao = true; // garante booleano
+                        } else if (cachedCaptainName && p.nome === cachedCaptainName) {
+                            p.capitao = true;
+                        } else {
+                            p.capitao = false;
+                        }
+                        return p;
+                    });
+
                     salvarNoCache();
                     render();
                 } else if (data && data.length === 0) {
@@ -1860,6 +1907,27 @@
             enviarParaSheets({ action: 'toggle', index: i, value: pessoas[i].pago });
         }
 
+        function toggleCapitao(i) {
+            if (!adminLogado) return;
+            const isCurrentlyCaptain = pessoas[i].capitao || false;
+            // Remove capitão de todos para garantir apenas um
+            pessoas.forEach(p => p.capitao = false);
+            pessoas[i].capitao = !isCurrentlyCaptain;
+            
+            // Salva o nome individualmente no localStorage como backup de segurança
+            if (pessoas[i].capitao) {
+                localStorage.setItem("capangas_capitao_nome", pessoas[i].nome);
+            } else {
+                localStorage.removeItem("capangas_capitao_nome");
+            }
+            
+            salvar();
+            render();
+            // Sincroniza estado atual com Sheets
+            enviarParaSheets({ action: 'save', data: pessoas });
+            showToast(pessoas[i].capitao ? "⭐ Capitão definido!" : "⚪ Capitão removido!");
+        }
+
         // =============================================
         // 📋 PIX
         // =============================================
@@ -1890,9 +1958,13 @@
                 }
 
                 if (p.nome.toLowerCase().includes(search)) {
+                    const isCaptain = p.capitao || false;
                     lista.innerHTML += `
-                        <tr>
-                            <td style="font-weight: 500;">${p.nome}</td>
+                        <tr class="${isCaptain ? 'row-captain' : ''}">
+                            <td style="font-weight: 500;">
+                                ${p.nome}
+                                ${isCaptain ? '<span class="badge capitao">C</span>' : ''}
+                            </td>
                             <td data-label="Posição">
                                 ${adminLogado ? `
                                 <button class="action-btn" onclick="abrirPosModal(${i})" style="font-size: 0.75rem; background: #111827; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--accent); color: var(--accent); cursor: pointer;">
@@ -1915,6 +1987,9 @@
                                         ${p.pago ? 'Desfazer' : 'Marcar'}
                                     </button>
                                     ${adminLogado ? `
+                                        <button class="action-btn" onclick="toggleCapitao(${i})" style="min-width: 40px; border-color: ${isCaptain ? 'var(--danger)' : 'var(--accent)'}; color: ${isCaptain ? 'var(--danger)' : 'var(--accent)'};" title="Definir Capitão">
+                                            ${isCaptain ? '★' : '☆'}
+                                        </button>
                                         <button class="action-btn btn-delete" onclick="removerPessoa(${i})">
                                             Excluir
                                         </button>
