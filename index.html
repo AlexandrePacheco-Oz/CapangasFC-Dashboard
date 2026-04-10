@@ -1732,18 +1732,10 @@
                 const data = await response.json();
 
                 if (data && Array.isArray(data) && data.length > 0 && data[0].nome !== undefined) {
-                    // Recupera o nome do capitão do cache local para não perdê-lo se a planilha não tiver a coluna
-                    const cachedCaptainName = localStorage.getItem("capangas_capitao_nome");
-                    
                     pessoas = data.map(p => {
-                        // Se o dado baixado já tiver 'capitao: true', deixa. Senão, confere pelo nome salvo.
-                        if (p.capitao === true || p.capitao === "TRUE") {
-                            p.capitao = true; // garante booleano
-                        } else if (cachedCaptainName && p.nome === cachedCaptainName) {
-                            p.capitao = true;
-                        } else {
-                            p.capitao = false;
-                        }
+                        // O Google Sheets é a única fonte da verdade.
+                        // Converte valores vindos da planilha (string ou booleano) para boolean real.
+                        p.capitao = (p.capitao === true || p.capitao === "TRUE");
                         return p;
                     });
 
@@ -1926,7 +1918,7 @@
             pessoas.forEach(p => p.capitao = false);
             pessoas[i].capitao = !isCurrentlyCaptain;
             
-            // Salva o nome individualmente no localStorage como backup de segurança
+            // Sincroniza estado para cache local (fallback rápido)
             if (pessoas[i].capitao) {
                 localStorage.setItem("capangas_capitao_nome", pessoas[i].nome);
             } else {
