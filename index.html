@@ -241,6 +241,34 @@
             transform: translateY(-3px);
         }
 
+        /* --- Indicador de Sincronização --- */
+        .sync-indicator {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            opacity: 0;
+        }
+
+        .sync-indicator.active { opacity: 1; }
+
+        .sync-spinner {
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* --- Stats Grid --- */
         .stats-grid {
             display: grid;
@@ -1229,6 +1257,12 @@
         <!-- Brand Bar: Logo e Ícones na mesma linha no topo -->
         <div class="brand-bar">
             <img src="imagem/LogoPng.png" alt="Logo" class="logo-header" onerror="this.style.display='none'">
+            
+            <div id="syncIndicator" class="sync-indicator">
+                <div class="sync-spinner"></div>
+                Sincronizando...
+            </div>
+
             <div class="top-action-bar">
                 <button class="icon-btn" onclick="toggleVisibility()" title="Ocultar valores">
                     <span id="eyeIcon">👁️</span>
@@ -1606,38 +1640,36 @@
 
         // Carrega dados da planilha Google
         async function carregarDoSheets() {
-            if (!API_URL) {
-                carregarDoCache();
-                return;
-            }
+            if (!API_URL) return;
+
+            const indicator = document.getElementById("syncIndicator");
+            indicator.classList.add("active");
 
             try {
-                document.getElementById("lista").innerHTML = `
-                    <tr><td colspan="3" style="text-align: center; padding: 30px; color: var(--text-dim);">
-                        ⏳ Carregando dados...
-                    </td></tr>`;
+                // Se o cache estiver vazio, mostra o carregando. Caso contrário, deixa o cache visível.
+                if (pessoas.length === 0 || (pessoas.length === pessoasPadrao.length && pessoas[0].nome === "Ni")) {
+                    document.getElementById("lista").innerHTML = `
+                        <tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-dim);">
+                            ⏳ Carregando dados...
+                        </td></tr>`;
+                }
 
                 const response = await fetch(API_URL);
                 const data = await response.json();
 
                 if (data && Array.isArray(data) && data.length > 0 && data[0].nome !== undefined) {
                     pessoas = data;
-                    salvarNoCache(); // Salva cache local para fallback
+                    salvarNoCache();
                     render();
                 } else if (data && data.length === 0) {
                     pessoas = [];
                     render();
-                } else {
-                    carregarDoCache();
                 }
             } catch (err) {
-                console.warn("⚠️ Falha ao conectar com Google Sheets, usando cache local:", err);
-                carregarDoCache();
-                showToast("⚠️ Offline - usando dados locais");
+                console.warn("⚠️ Falha ao conectar com Google Sheets:", err);
+            } finally {
+                setTimeout(() => indicator.classList.remove("active"), 1000);
             }
-
-            // Agora carrega os jogos do calendário do Sheets
-            carregarJogosDoSheets();
         }
 
         // Envia dados para a planilha Google
@@ -1906,11 +1938,11 @@
         }
 
         async function carregarJogosDoSheets() {
-            if (!API_URL) {
-                carregarJogosDoCache();
-                renderCalendario();
-                return;
-            }
+            if (!API_URL) return;
+
+            const indicator = document.getElementById("syncIndicator");
+            indicator.classList.add("active");
+
             try {
                 const response = await fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + 'type=calendario');
                 const data = await response.json();
@@ -1933,7 +1965,11 @@
                 }
             } catch (e) {
                 console.warn("Offline ou Erro ao carregar jogos da nuvem", e);
-                carregarJogosDoCache();
+            } finally {
+                setTimeout(() => {
+                    const indicator = document.getElementById("syncIndicator");
+                    if (indicator) indicator.classList.remove("active");
+                }, 1000);
             }
             renderCalendario();
             if (calTab === 'jogos') renderGamesList(); verificarJogoHoje();
@@ -2229,11 +2265,26 @@
             }
         }
 
-        // Iniciar o calendário no mês atual
-        buildPosModal();
-        renderCalendario();
-        carregarJogosDoCache();
-        verificarJogoHoje();
+        // Iniciar o aplicativo (Cache-First + Parallel Sync)
+        async function initApp() {
+            // 1. Carrega imediatamente o que tiver no Cache
+            carregarDoCache();
+            carregarJogosDoCache();
+            buildPosModal();
+            render();
+            renderCalendario();
+            verificarJogoHoje();
+
+            // 2. Dispara a sincronização em paralelo se houver internet
+            if (navigator.onLine && API_URL) {
+                Promise.all([
+                    carregarDoSheets(),
+                    carregarJogosDoSheets()
+                ]).catch(err => console.warn("Erro na sincronização:", err));
+            }
+        }
+
+        initApp();
     </script>
 
 </body>
