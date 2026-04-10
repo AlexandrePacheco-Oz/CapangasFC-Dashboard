@@ -456,20 +456,22 @@
             background: rgba(255, 77, 77, 0.05) !important;
         }
 
-        /* For desktop table row highlight */
-        tr.row-captain td {
-            border-top: 1px solid var(--danger);
-            border-bottom: 1px solid var(--danger);
-        }
-        tr.row-captain td:first-child {
-            border-left: 1px solid var(--danger);
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-        tr.row-captain td:last-child {
-            border-right: 1px solid var(--danger);
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
+        /* Destaque para Desktop (Tabela) */
+        @media (min-width: 1025px) {
+            tr.row-captain td {
+                border-top: 1px solid var(--danger);
+                border-bottom: 1px solid var(--danger);
+            }
+            tr.row-captain td:first-child {
+                border-left: 1px solid var(--danger);
+                border-top-left-radius: 8px;
+                border-bottom-left-radius: 8px;
+            }
+            tr.row-captain td:last-child {
+                border-right: 1px solid var(--danger);
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+            }
         }
 
         .action-btn {
