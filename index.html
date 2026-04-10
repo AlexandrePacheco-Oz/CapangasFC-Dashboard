@@ -350,22 +350,24 @@
 
         .login-section {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
-            background: var(--glass-bg);
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
         }
 
         .login-section input {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 6px 10px;
+            padding: 8px 12px;
             color: #fff;
-            width: 80px;
-            font-size: 0.8rem;
+            width: 100px;
+            font-size: 0.85rem;
+            transition: border-color 0.2s;
+        }
+
+        .login-section input:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
         .btn-login {
@@ -829,9 +831,9 @@
 
             /* Header Icons adjustment */
             .top-action-bar {
-                top: 10px;
-                right: 10px;
-                gap: 8px;
+                top: 15px;
+                right: 15px;
+                gap: 10px;
             }
 
             .icon-btn {
@@ -1257,18 +1259,26 @@
 
         .floating-login {
             position: absolute;
-            top: 75px;
+            top: 85px;
             right: 20px;
-            background: rgba(17, 24, 39, 0.95);
-            border: 1px solid var(--glass-border);
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-            z-index: 100;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--accent);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.1);
+            z-index: 1000;
             display: none;
             flex-direction: column;
-            gap: 10px;
-            width: 280px;
+            gap: 12px;
+            width: auto;
+            min-width: 280px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .stat-value {
