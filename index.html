@@ -686,23 +686,50 @@
 
             .stats-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 5px;
-                margin-bottom: 12px;
+                gap: 8px;
+                margin-bottom: 15px;
             }
 
             .stat-card {
-                padding: 6px 4px;
-                border-radius: 10px;
-                border-left-width: 2px;
+                padding: 10px 5px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                border-left: 3px solid var(--accent) !important;
             }
 
             .stat-label {
-                font-size: 0.55rem;
-                letter-spacing: 0;
+                font-size: 0.6rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                margin-bottom: 2px;
             }
 
             .stat-value {
-                font-size: 0.85rem;
+                font-size: 1.1rem;
+                font-weight: 800;
+            }
+
+            /* Otimização do Campo para Celular */
+            .football-field-perspective {
+                perspective: 1200px !important;
+                margin-top: 5px;
+            }
+            .football-field {
+                max-width: 95vw !important;
+                transform: rotateX(15deg) !important;
+            }
+            .player-node {
+                width: 18% !important; /* Aumentado para toque */
+                transform: translate(-50%, -50%) translateZ(10px) !important;
+            }
+            .jersey-icon {
+                width: 38px !important;
+                height: 38px !important;
+            }
+            .player-name-label {
+                font-size: 0.7rem !important;
+                padding: 3px 6px !important;
+                min-width: 60px !important;
             }
 
             .qr-code {
@@ -1568,10 +1595,6 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Saldo em Caixa</div>
-                <div class="stat-value" id="statSaldoCaixa" style="color: var(--accent); font-size: 1.5rem;">R$ 0</div>
-            </div>
-            <div class="stat-card">
                 <div class="stat-label">Total Arrecadado</div>
                 <div class="stat-value paid" id="statArrecadado">R$ 0</div>
             </div>
@@ -2428,12 +2451,10 @@
             const totalSaidas = gastos.reduce((acc, g) => acc + (parseFloat(g.valor) || 0), 0);
             const saldoFinal = (saldoInicialMensal + totalArrecadado) - totalSaidas;
 
-            const elSaldo = document.getElementById("statSaldoCaixa");
             const elAnt = document.getElementById("gastoSaldoAnterior");
             const elEnt = document.getElementById("gastoEntradas");
             const elSai = document.getElementById("gastoSaidas");
 
-            if (elSaldo) elSaldo.innerText = "R$ " + saldoFinal.toFixed(2);
             if (elAnt) elAnt.innerText = "R$ " + saldoInicialMensal.toFixed(2);
             if (elEnt) elEnt.innerText = "R$ " + totalArrecadado.toFixed(2);
             if (elSai) elSai.innerText = "R$ " + totalSaidas.toFixed(2);
