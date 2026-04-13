@@ -1281,8 +1281,173 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .stat-value {
-            transition: filter 0.3s, opacity 0.3s;
+        /* =========================================
+           🏟️ FOOTBALL FIELD STYLES
+        ========================================= */
+        .football-field-perspective {
+            perspective: 800px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .football-field {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 2 / 3;
+            background: #2e7d32;
+            position: relative;
+            transform: rotateX(20deg);
+            transform-style: preserve-3d;
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .field-grass {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                180deg,
+                #2e7d32,
+                #2e7d32 10%,
+                #388e3c 10%,
+                #388e3c 20%
+            );
+            pointer-events: none; /* Não bloqueia cliques nos jogadores */
+        }
+
+        .field-lines {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .field-lines::after {
+            content: '';
+            position: absolute;
+            top: 50%; width: 100%; height: 1px;
+            background: rgba(255,255,255,0.6);
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%; left: 50%; width: 25%; aspect-ratio: 1;
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .penalty-area-top, .penalty-area-bottom {
+            position: absolute;
+            width: 50%; height: 15%;
+            border: 1px solid rgba(255,255,255,0.6);
+            left: 25%;
+        }
+
+        .penalty-area-top { top: 0; border-top: none; }
+        .penalty-area-bottom { bottom: 0; border-bottom: none; }
+
+        .player-node {
+            position: absolute;
+            width: 15%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translate(-50%, -50%) translateZ(15px);
+            transition: all 0.5s ease;
+            z-index: 100; /* Garante que fiquem acima de todas as linhas */
+            pointer-events: auto;
+        }
+
+        #playersLayer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 99;
+            pointer-events: none; /* Deixa cliques passarem para os filhos (.player-node) */
+        }
+
+        .jersey-icon {
+            width: 100%;
+            aspect-ratio: 1;
+            /* Uniforme Listrado: Azul e Branco */
+            background: #fff repeating-linear-gradient(
+                90deg,
+                #fff 0%, #fff 25%,
+                #1e40af 25%, #1e40af 50%
+            );
+            /* Shape da Camisa */
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22,6L16,4L12,6L8,4L2,6V10H6V20H18V10H22V6Z'/%3E%3C/svg%3E") no-repeat center;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22,6L16,4L12,6L8,4L2,6V10H6V20H18V10H22V6Z'/%3E%3C/svg%3E") no-repeat center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            cursor: pointer;
+            position: relative;
+            border-bottom: 2px solid #d4af37; /* Detalhe dourado na barra */
+        }
+
+        /* Gola e Detalhes Dourados */
+        .jersey-icon::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 20%, #d4af37 10%, transparent 12%);
+            pointer-events: none;
+        }
+
+        .jersey-icon:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 12px var(--accent));
+        }
+
+        .player-node:hover .player-name-label {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .jersey-icon.gk { 
+            /* Goleiro: Preto com detalhes cinza */
+            background: #111 repeating-linear-gradient(
+                45deg,
+                #111 0%, #111 48%,
+                #333 50%, #333 52%,
+                #111 54%
+            );
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8));
+        }
+
+        .jersey-icon.gk::after {
+            background: radial-gradient(circle at 50% 20%, #fff 10%, transparent 12%);
+        }
+
+        .player-name-label {
+            margin-top: 4px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 1px 3px #000;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .player-select {
+            margin-top: 4px;
+            width: 90px;
+            background: #111827;
+            color: #fff;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            font-size: 0.6rem;
+            padding: 2px;
+            outline: none;
         }
     </style>
 </head>
@@ -1314,6 +1479,37 @@
             <button class="action-btn"
                 style="background: var(--success); color: #000; width: 100%; margin-top: 20px; font-weight: bold; padding: 12px; font-size: 0.9rem;"
                 onclick="confirmarPosicoes()">💾 Confirmar Posições</button>
+        </div>
+    </div>
+
+    <!-- Modal Seleção de Jogador para Escalação (Clean UI) -->
+    <div id="playerSelectModal" class="modal" onclick="this.style.display='none'" style="z-index: 2000; backdrop-filter: blur(8px);">
+        <div class="modal-content" onclick="event.stopPropagation()" 
+            style="max-width: 420px; padding: 0; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+            
+            <!-- Header Minimalista -->
+            <div style="padding: 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <span class="close-modal" onclick="document.getElementById('playerSelectModal').style.display='none'">&times;</span>
+                <h3 style="color: #fff; margin: 0; font-size: 1.2rem; font-weight: 600;">Escalando</h3>
+                <p id="labelPosicaoSendoEditada" style="color: var(--accent); font-size: 0.7rem; margin: 2px 0 0 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"></p>
+            </div>
+
+            <!-- Busca Integrada -->
+            <div style="padding: 15px 25px;">
+                <input type="text" id="modalPlayerSearch" placeholder="Procurar jogador..." 
+                    style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 15px; color: #fff; font-size: 0.85rem; outline: none;"
+                    oninput="filtrarJogadoresModal(this.value)">
+            </div>
+            
+            <!-- Lista Clean -->
+            <div id="playerSelectList" style="display: flex; flex-direction: column; gap: 2px; max-height: 55vh; overflow-y: auto; padding: 0 10px 15px 10px;">
+                <!-- Lista de jogadores injetada via JS -->
+            </div>
+
+            <!-- Botão de Limpar mais discreto -->
+            <div style="padding: 15px 25px; border-top: 1px solid rgba(255,255,255,0.05);">
+                <button class="action-btn" style="width: 100%; background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem;" onclick="atribuirJogador('')">Remover Jogador</button>
+            </div>
         </div>
     </div>
 
@@ -1388,6 +1584,51 @@
                 <div class="stat-value pending" id="statPendentes">0</div>
             </div>
         </div>
+
+        <!-- ===== TAB NAVEGAÇÃO SECUNDÁRIA ===== -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
+             <button class="cal-tab active" id="btnTabFinanceiro" onclick="switchMainTab('financeiro')">💰 Geral</button>
+             <button class="cal-tab inactive" id="btnTabEscalacao" onclick="switchMainTab('escalacao')">🏟️ Escalação</button>
+        </div>
+
+        <!-- CONTEÚDO DA ABA ESCALAÇÃO -->
+        <div id="escalacaoTab" style="display:none; margin-bottom:30px;">
+            <div class="calendar-section" style="padding: 20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h2 style="color:var(--accent); font-size:1.2rem;">Escalação Tática</h2>
+                        <p style="font-size:0.7rem; color:var(--text-dim);">Capangas em campo</p>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <select id="selModoEscalacao" onchange="mudarModoEscalacao()" style="background:#111827; border:1px solid var(--accent); color:#fff; border-radius:8px; padding:6px 10px; font-size:0.8rem;">
+                            <option value="campo_11">Campo (11 j)</option>
+                            <option value="society_7">Society (7 j)</option>
+                            <option value="quadra_5">Quadra (5 j)</option>
+                        </select>
+                        <select id="selFormacao" onchange="mudarFormacao()" style="background:#111827; border:1px solid var(--accent); color:#fff; border-radius:8px; padding:6px 10px; font-size:0.8rem;"></select>
+                        <button class="action-btn" id="btnSaveEscalacao" onclick="salvarEscalacaoSheets()" style="display:none; background:var(--success); color:#000; font-weight:700;">💾 Salvar</button>
+                    </div>
+                </div>
+
+                <!-- CAMPO DE FUTEBOL -->
+                <div class="football-field-perspective">
+                    <div class="football-field" id="mainField">
+                        <!-- Grama e Listras -->
+                        <div class="field-grass"></div>
+                        <!-- Linhas do Campo -->
+                        <div class="field-lines">
+                            <div class="center-circle"></div>
+                            <div class="penalty-area-top"></div>
+                            <div class="penalty-area-bottom"></div>
+                        </div>
+                        <!-- Jogadores serão inseridos aqui -->
+                        <div id="playersLayer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="financeiroContent">
 
         <!-- ===== CALENDÁRIO DE JOGOS ===== -->
         <div class="calendar-section" id="calendarSection">
@@ -1585,13 +1826,8 @@
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
                     <input type="text" id="novoGastoDesc" placeholder="Descrição (ex: Água)" style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
                     <input type="number" id="novoGastoValor" placeholder="Valor R$" style="flex:1; min-width:80px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
-                    <input type="text" id="novoGastoLink" placeholder="Link Comprovante (Opcional)" style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
+                    
                     <button onclick="adicionarGasto()" style="background:var(--danger); color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕ Adicionar</button>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; margin-top:5px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05);">
-                    <span style="font-size:0.7rem; color:var(--text-dim);">Ajuste Saldo Inicial:</span>
-                    <input type="number" id="ajusteSaldoInicial" placeholder="R$ 0.00" style="width:100px; background:rgba(0,0,0,0.3); border:1px solid var(--accent); border-radius:6px; padding:4px 8px; color:#fff; font-size:0.8rem;">
-                    <button class="action-btn" onclick="ajustarSaldo()" style="height:28px; min-width:60px; font-size:0.7rem;">Definir</button>
                 </div>
             </div>
 
@@ -1953,6 +2189,7 @@
             document.getElementById("mensalidadeAdminPanel").style.display = "flex";
             document.getElementById("gastosAdminPanel").style.display = "flex";
             renderCalendario();
+            renderEscalacao();
             
             // Verificar se precisa zerar o mês
             verificarResetMensal();
@@ -2037,6 +2274,7 @@
             document.getElementById("mensalidadeAdminPanel").style.display = "none";
             render();
             renderCalendario();
+            renderEscalacao();
         }
 
         function salvarMensalidadeBtn() {
@@ -2182,6 +2420,8 @@
             } catch (e) {
                 console.warn("Falha ao renderizar painel financeiro:", e);
             }
+            
+            renderEscalacao();
         }
 
         function renderFinanceiro(totalArrecadado) {
@@ -2197,12 +2437,6 @@
             if (elAnt) elAnt.innerText = "R$ " + saldoInicialMensal.toFixed(2);
             if (elEnt) elEnt.innerText = "R$ " + totalArrecadado.toFixed(2);
             if (elSai) elSai.innerText = "R$ " + totalSaidas.toFixed(2);
-            
-            // Atualiza input de ajuste para refletir o valor atual se estiver vazio
-            const elAjuste = document.getElementById("ajusteSaldoInicial");
-            if (elAjuste && !elAjuste.value) {
-                elAjuste.placeholder = saldoInicialMensal.toFixed(2);
-            }
         }
 
         function toggleGastos() {
@@ -2234,7 +2468,6 @@
                     <tr>
                         <td style="font-weight: 500;">
                             ${g.descricao}
-                            ${hasLink ? `<a href="${g.link}" target="_blank" style="margin-left:6px; text-decoration:none;" title="Ver Comprovante">📎</a>` : ""}
                         </td>
                         <td style="color: var(--danger); font-weight: 700;">- R$ ${parseFloat(g.valor).toFixed(2)}</td>
                         <td>
@@ -2250,25 +2483,25 @@
         function adicionarGasto() {
             const descValue = document.getElementById("novoGastoDesc").value.trim();
             const valValue = parseFloat(document.getElementById("novoGastoValor").value);
-            const linkValue = document.getElementById("novoGastoLink").value.trim();
             
             if (!descValue || isNaN(valValue)) { showToast('⚠️ Digite descrição e valor!'); return; }
 
             gastos.push({ 
                 descricao: descValue, 
                 valor: valValue, 
-                data: new Date().toISOString(),
-                link: linkValue || "" 
+                data: new Date().toISOString()
             });
             
             document.getElementById("novoGastoDesc").value = "";
             document.getElementById("novoGastoValor").value = "";
-            document.getElementById("novoGastoLink").value = "";
             
             salvar();
             render();
             renderGastos();
-            showToast("💸 Gasto adicionado!");
+            
+            // Sincroniza com Google Sheets
+            enviarParaSheets({ type: 'gastos', action: 'save', data: gastos, saldoInicial: saldoInicialMensal });
+            showToast("💸 Gasto totalizado!");
         }
 
         function removerGasto(i) {
@@ -2278,20 +2511,13 @@
                 salvar();
                 render();
                 renderGastos();
+                
+                // Sincroniza com Google Sheets
+                enviarParaSheets({ type: 'gastos', action: 'save', data: gastos, saldoInicial: saldoInicialMensal });
                 showToast("🗑️ Gasto removido!");
             }
         }
 
-        function ajustarSaldo() {
-            if (!adminLogado) return;
-            const val = parseFloat(document.getElementById("ajusteSaldoInicial").value);
-            if (isNaN(val)) return;
-            
-            saldoInicialMensal = val;
-            salvar();
-            render();
-            showToast("💰 Saldo anterior ajustado!");
-        }
 
         function salvarGastosBtn() {
             salvar();
@@ -2708,6 +2934,341 @@
         }
 
         initApp();
+        function switchMainTab(tab) {
+            document.getElementById('financeiroContent').style.display = (tab === 'financeiro' ? 'block' : 'none');
+            document.getElementById('escalacaoTab').style.display = (tab === 'escalacao' ? 'block' : 'none');
+            
+            document.getElementById('btnTabFinanceiro').className = 'cal-tab ' + (tab === 'financeiro' ? 'active' : 'inactive');
+            document.getElementById('btnTabEscalacao').className = 'cal-tab ' + (tab === 'escalacao' ? 'active' : 'inactive');
+            
+            if (tab === 'escalacao') {
+                mudarModoEscalacao(); // Garante que o menu de formações esteja populado
+                renderEscalacao();
+            }
+        }
+
+        // --- LÓGICA DE ESCALAÇÃO ---
+        const CONFIG_ESCALACAO = {
+            campo_11: {
+                label: "Campo (11 j)",
+                formacoes: {
+                    "4-4-2": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "LM", x: 15, y: 45 }, { id: "CM1", x: 38, y: 50 }, { id: "CM2", x: 62, y: 50 }, { id: "RM", x: 85, y: 45 },
+                        { id: "ST1", x: 35, y: 20 }, { id: "ST2", x: 65, y: 20 }
+                    ],
+                    "4-3-3": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CM1", x: 50, y: 55 }, { id: "CM2", x: 25, y: 45 }, { id: "CM3", x: 75, y: 45 },
+                        { id: "LW", x: 20, y: 20 }, { id: "RW", x: 80, y: 20 }, { id: "ST", x: 50, y: 15 }
+                    ],
+                    "3-5-2": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "CB1", x: 50, y: 78 }, { id: "CB2", x: 30, y: 75 }, { id: "CB3", x: 70, y: 75 },
+                        { id: "LWB", x: 15, y: 45 }, { id: "RWB", x: 85, y: 45 },
+                        { id: "CM1", x: 50, y: 58 }, { id: "CM2", x: 35, y: 50 }, { id: "CM3", x: 65, y: 50 },
+                        { id: "ST1", x: 40, y: 20 }, { id: "ST2", x: 60, y: 20 }
+                    ],
+                    "4-2-3-1": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CDM1", x: 40, y: 55 }, { id: "CDM2", x: 60, y: 55 },
+                        { id: "CAM", x: 50, y: 35 }, { id: "LW", x: 20, y: 30 }, { id: "RW", x: 80, y: 30 },
+                        { id: "ST", x: 50, y: 15 }
+                    ],
+                    "5-3-2": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 35, y: 75 }, { id: "CB2", x: 50, y: 78 }, { id: "CB3", x: 65, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CM1", x: 30, y: 50 }, { id: "CM2", x: 50, y: 55 }, { id: "CM3", x: 70, y: 50 },
+                        { id: "ST1", x: 40, y: 20 }, { id: "ST2", x: 60, y: 20 }
+                    ],
+                    "4-1-4-1": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CDM", x: 50, y: 58 },
+                        { id: "LM", x: 20, y: 40 }, { id: "CM1", x: 40, y: 38 }, { id: "CM2", x: 60, y: 38 }, { id: "RM", x: 80, y: 40 },
+                        { id: "ST", x: 50, y: 15 }
+                    ],
+                    "3-4-3": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "CB1", x: 50, y: 78 }, { id: "CB2", x: 30, y: 75 }, { id: "CB3", x: 70, y: 75 },
+                        { id: "LM", x: 15, y: 50 }, { id: "CM1", x: 40, y: 55 }, { id: "CM2", x: 60, y: 55 }, { id: "RM", x: 85, y: 50 },
+                        { id: "LW", x: 25, y: 20 }, { id: "RW", x: 75, y: 20 }, { id: "ST", x: 50, y: 15 }
+                    ],
+                    "4-5-1": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CM1", x: 50, y: 55 }, { id: "CM2", x: 25, y: 45 }, { id: "CM3", x: 75, y: 45 }, { id: "CM4", x: 40, y: 40 }, { id: "CM5", x: 60, y: 40 },
+                        { id: "ST", x: 50, y: 20 }
+                    ],
+                    "4-3-1-2": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CM1", x: 50, y: 60 }, { id: "CM2", x: 30, y: 50 }, { id: "CM3", x: 70, y: 50 },
+                        { id: "AM", x: 50, y: 35 },
+                        { id: "ST1", x: 40, y: 20 }, { id: "ST2", x: 60, y: 20 }
+                    ],
+                    "3-6-1": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "CB1", x: 50, y: 78 }, { id: "CB2", x: 30, y: 75 }, { id: "CB3", x: 70, y: 75 },
+                        { id: "LM", x: 15, y: 50 }, { id: "RM", x: 85, y: 50 },
+                        { id: "CM1", x: 40, y: 58 }, { id: "CM2", x: 60, y: 58 },
+                        { id: "AM1", x: 35, y: 38 }, { id: "AM2", x: 65, y: 38 },
+                        { id: "ST", x: 50, y: 15 }
+                    ],
+                    "4-2-2-2": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "LB", x: 15, y: 70 }, { id: "CB1", x: 38, y: 75 }, { id: "CB2", x: 62, y: 75 }, { id: "RB", x: 85, y: 70 },
+                        { id: "CDM1", x: 40, y: 55 }, { id: "CDM2", x: 60, y: 55 },
+                        { id: "AM1", x: 35, y: 35 }, { id: "AM2", x: 65, y: 35 },
+                        { id: "ST1", x: 40, y: 15 }, { id: "ST2", x: 60, y: 15 }
+                    ]
+                }
+            },
+            society_7: {
+                label: "Society (7 j)",
+                formacoes: {
+                    "2-3-1": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "DF1", x: 25, y: 75 }, { id: "DF2", x: 75, y: 75 },
+                        { id: "MD1", x: 50, y: 55 }, { id: "MD2", x: 20, y: 45 }, { id: "MD3", x: 80, y: 45 },
+                        { id: "ST", x: 50, y: 20 }
+                    ],
+                    "3-2-1": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "DF1", x: 50, y: 78 }, { id: "DF2", x: 20, y: 70 }, { id: "DF3", x: 80, y: 70 },
+                        { id: "MD1", x: 35, y: 45 }, { id: "MD2", x: 65, y: 45 },
+                        { id: "ST", x: 50, y: 20 }
+                    ]
+                }
+            },
+            quadra_5: {
+                label: "Quadra (5 j)",
+                formacoes: {
+                    "2-2": [
+                        { id: "GK", x: 50, y: 92 },
+                        { id: "FIX1", x: 30, y: 75 }, { id: "FIX2", x: 70, y: 75 },
+                        { id: "ALA1", x: 30, y: 35 }, { id: "ALA2", x: 70, y: 35 },
+                        { id: "PIVO", x: 50, y: 15 }
+                    ],
+                    "1-2-1": [
+                        { id: "GK", x: 50, y: 85 },
+                        { id: "FIXO", x: 50, y: 92 },
+                        { id: "ALA1", x: 20, y: 50 }, { id: "ALA2", x: 80, y: 50 },
+                        { id: "PIVO", x: 50, y: 20 }
+                    ]
+                }
+            }
+        };
+
+        const DICIONARIO_POSICOES = {
+            "GK": "Goleiro",
+            "CB": "Zagueiro", "CB1": "Zagueiro 1", "CB2": "Zagueiro 2", "CB3": "Zagueiro 3",
+            "LB": "Lat. Esquerdo", "RB": "Lat. Direito",
+            "LWB": "Ala Esquerdo", "RWB": "Ala Direito",
+            "CDM": "Volante", "CDM1": "Volante 1", "CDM2": "Volante 2",
+            "CM": "Meio-Campo", "CM1": "Meio-Campo 1", "CM2": "Meio-Campo 2", "CM3": "Meio-Campo 3", "CM4": "Meio-Campo 4", "CM5": "Meio-Campo 5",
+            "CAM": "Meia Ofensivo", "AM": "Meia Atacante", "AM1": "Meia Atacante 1", "AM2": "Meia Atacante 2",
+            "LM": "Meio Esq.", "RM": "Meio Dir.",
+            "LW": "Ponta Esq.", "RW": "Ponta Dir.",
+            "ST": "Atacante", "ST1": "Atacante 1", "ST2": "Atacante 2",
+            "FIX1": "Fixo 1", "FIX2": "Fixo 2", "FIXO": "Fixo",
+            "ALA1": "Ala 1", "ALA2": "Ala 2", "PIVO": "Pivô",
+            "MD1": "Meio 1", "MD2": "Meio 2", "MD3": "Meio 3",
+            "DF1": "Defesa 1", "DF2": "Defesa 2", "DF3": "Defesa 3"
+        };
+
+        function traduzirPos(id) {
+            return DICIONARIO_POSICOES[id] || id;
+        }
+
+        let escalacaoAtual = {
+            modo: 'campo_11',
+            formacao: '4-4-2',
+            jogadores: {} // id_posicao -> nome_jogador
+        };
+
+        function mudarModoEscalacao() {
+            const modo = document.getElementById("selModoEscalacao").value;
+            escalacaoAtual.modo = modo;
+            
+            // Preenche seletor de formação
+            const selF = document.getElementById("selFormacao");
+            selF.innerHTML = "";
+            const formacoes = Object.keys(CONFIG_ESCALACAO[modo].formacoes);
+            formacoes.forEach(f => {
+                selF.innerHTML += `<option value="${f}">${f}</option>`;
+            });
+            escalacaoAtual.formacao = formacoes[0];
+            renderEscalacao();
+        }
+
+        function mudarFormacao() {
+            escalacaoAtual.formacao = document.getElementById("selFormacao").value;
+            renderEscalacao();
+        }
+
+        let posSendoEscalada = "";
+
+        function renderEscalacao() {
+            const container = document.getElementById("playersLayer");
+            container.innerHTML = "";
+            
+            const btnSave = document.getElementById("btnSaveEscalacao");
+            if (adminLogado) btnSave.style.display = 'block';
+
+            const config = CONFIG_ESCALACAO[escalacaoAtual.modo].formacoes[escalacaoAtual.formacao];
+            
+            config.forEach(pos => {
+                const isGK = pos.id.includes("GK") || pos.id === "FIX1" || pos.id === "FIX2" || pos.id === "FIXO";
+                const realIsGK = pos.id.includes("GK");
+                const jogadorSalvo = escalacaoAtual.jogadores[pos.id] || "";
+                
+                let nodeHtml = "";
+                if (isGK) {
+                    // Para o Goleiro, o nome vai ACIMA da camisa
+                    nodeHtml = `
+                        <div class="player-node" style="left: ${pos.x}%; top: ${pos.y}%;">
+                            <div class="player-name-label" style="cursor: pointer; margin-top: 0; margin-bottom: 5px;" onclick="abrirSelecaoJogador('${pos.id}')">${jogadorSalvo || traduzirPos(pos.id)}</div>
+                            <div class="jersey-icon ${realIsGK ? 'gk' : ''}" title="${pos.id}" onclick="abrirSelecaoJogador('${pos.id}')"></div>
+                        </div>
+                    `;
+                } else {
+                    // Para os demais, o nome vai ABAIXO da camisa
+                    nodeHtml = `
+                        <div class="player-node" style="left: ${pos.x}%; top: ${pos.y}%;">
+                            <div class="jersey-icon ${realIsGK ? 'gk' : ''}" title="${pos.id}" onclick="abrirSelecaoJogador('${pos.id}')"></div>
+                            <div class="player-name-label" style="cursor: pointer;" onclick="abrirSelecaoJogador('${pos.id}')">${jogadorSalvo || traduzirPos(pos.id)}</div>
+                        </div>
+                    `;
+                }
+                container.innerHTML += nodeHtml;
+            });
+        }
+
+        function abrirSelecaoJogador(posId) {
+            console.log("Tentando abrir seleção para posição:", posId);
+            posSendoEscalada = posId;
+            document.getElementById("labelPosicaoSendoEditada").textContent = "Posição: " + traduzirPos(posId);
+            document.getElementById("modalPlayerSearch").value = ""; // Reseta busca
+            
+            document.getElementById("playerSelectModal").style.display = "flex";
+            filtrarJogadoresModal(""); 
+        }
+
+        function filtrarJogadoresModal(termo) {
+            const list = document.getElementById("playerSelectList");
+            list.innerHTML = "";
+            const search = termo.toLowerCase();
+
+            // Mapeia posições para categorias simples
+            const catMap = { 
+                "GK": "G", "FIXO": "G", "FIX1": "G", "FIX2": "G",
+                "CB1": "Z", "CB2": "Z", "CB3": "Z", "LB": "L", "RB": "L",
+                "CM1": "M", "CM2": "M", "CM3": "M", "CM4": "M", "CDM": "M", "CDM1": "M", "CDM2": "M",
+                "ST": "A", "ST1": "A", "ST2": "A", "LW": "A", "RW": "A"
+            };
+            const posSendoEditadaSimplificada = catMap[posSendoEscalada] || "";
+
+            const jogadoresOrdenados = [...pessoas].sort((a,b) => {
+                // Sugestão de posição no topo
+                const aMatch = (a.posicao || "").includes(posSendoEditadaSimplificada) || (a.posicoes || []).some(pos => pos.includes(posSendoEditadaSimplificada));
+                const bMatch = (b.posicao || "").includes(posSendoEditadaSimplificada) || (b.posicoes || []).some(pos => pos.includes(posSendoEditadaSimplificada));
+                if (aMatch && !bMatch) return -1;
+                if (!aMatch && bMatch) return 1;
+                return a.nome.localeCompare(b.nome);
+            });
+
+            jogadoresOrdenados.forEach(p => {
+                if (!p.nome.toLowerCase().includes(search)) return;
+
+                const isEscalado = Object.values(escalacaoAtual.jogadores).includes(p.nome);
+                const isSuggestion = posSendoEditadaSimplificada && ((p.posicao || "").includes(posSendoEditadaSimplificada) || (p.posicoes || []).some(pos => pos.includes(posSendoEditadaSimplificada)));
+
+                const item = document.createElement("div");
+                item.style.cssText = `
+                    display: flex; align-items: center; justify-content: space-between;
+                    padding: 12px 20px; border-radius: 8px;
+                    background: ${isEscalado ? 'rgba(74, 222, 128, 0.05)' : 'transparent'};
+                    cursor: pointer; transition: all 0.2s ease;
+                    border: 1px solid ${isEscalado ? 'rgba(74, 222, 128, 0.2)' : 'transparent'};
+                `;
+                item.onclick = () => atribuirJogador(p.nome);
+                item.onmouseenter = () => {
+                    item.style.background = "rgba(255,255,255,0.05)";
+                    item.style.borderColor = "rgba(255,255,255,0.1)";
+                };
+                item.onmouseleave = () => {
+                    item.style.background = isEscalado ? 'rgba(74, 222, 128, 0.05)' : 'transparent';
+                    item.style.borderColor = isEscalado ? 'rgba(74, 222, 128, 0.2)' : 'transparent';
+                };
+
+                const displayPos = p.posicao || (p.posicoes && p.posicoes.length > 0 ? p.posicoes.join(", ") : "--");
+
+                item.innerHTML = `
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-weight:500; font-size: 0.9rem; color:${isEscalado ? 'var(--success)' : '#fff'};">
+                            ${isSuggestion ? '⭐ ' : ''}${p.nome}
+                        </span>
+                        <span style="font-size:0.7rem; color:var(--text-dim);">${displayPos}</span>
+                    </div>
+                    ${isEscalado ? '<span style="font-size:0.6rem; color:var(--success); font-weight:700;">ESCALADO</span>' : ''}
+                `;
+                list.appendChild(item);
+                list.appendChild(item);
+            });
+
+            if (list.innerHTML === "") {
+                list.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 0.8rem;">Nenhum craque encontrado com "${termo}"</div>`;
+            }
+        }
+
+        function atribuirJogador(nome) {
+            if (!posSendoEscalada) return;
+            escalacaoAtual.jogadores[posSendoEscalada] = nome;
+            renderEscalacao();
+            document.getElementById("playerSelectModal").style.display = "none";
+        }
+
+        function atualizarJogadorPosicao(idPos, nome) {
+            escalacaoAtual.jogadores[idPos] = nome;
+        }
+
+        async function salvarEscalacaoSheets() {
+            if (!adminLogado) return;
+            showToast("⏳ Salvando escalação...");
+            await enviarParaSheets({
+                type: 'escalacao',
+                data: escalacaoAtual
+            });
+            showToast("✅ Equipe escalada!");
+        }
+
+        async function carregarEscalacaoSheets() {
+            try {
+                const response = await fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + 'type=escalacao');
+                const data = await response.json();
+                if (data && data.modo) {
+                    escalacaoAtual = data;
+                    document.getElementById("selModoEscalacao").value = data.modo;
+                    mudarModoEscalacao(); // Recarrega seletor de formação e aplica formacao[0]
+                    
+                    // Aplica a formação específica vinda da nuvem
+                    escalacaoAtual.formacao = data.formacao;
+                    document.getElementById("selFormacao").value = data.formacao;
+                    renderEscalacao();
+                }
+            } catch (e) { console.warn("Erro carregar escalação", e); }
+        }
+
+        // Adicionar carregamento de escalação ao init
+        const oldInit = carregarDoSheets;
+        carregarDoSheets = async function() {
+            await oldInit();
+            carregarEscalacaoSheets();
+        }
     </script>
 
 </body>
