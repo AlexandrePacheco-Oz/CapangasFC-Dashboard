@@ -1972,17 +1972,31 @@
 
             // Se o mês mudou
             if (ultimoReset !== mesAtual) {
-                if (confirm(`📆 Novo mês (${mesAtual}) detectado!\n\nDeseja zerar os status de pagamento (PAGO para PENDENTE)?\n\nIsso manterá todos os seus outros dados intactos.`)) {
+                // Calcula o saldo final do mês que passou para transportar
+                const paidCount = pessoas.filter(p => p.pago).length;
+                const totalArrecadado = paidCount * 20;
+                const totalGastos = gastos.reduce((acc, g) => acc + (parseFloat(g.valor) || 0), 0);
+                const saldoFinalCalculado = (saldoInicialMensal + totalArrecadado) - totalGastos;
+
+                if (confirm(`📆 Novo mês (${mesAtual}) detectado!\n\nDeseja realizar o FECHAMENTO MENSAL?\n\n- Saldo de R$ ${saldoFinalCalculado.toFixed(2)} será transportado.\n- Lista de gastos será limpa.\n- Pagamentos voltarão para PENDENTE.`)) {
+                    // 1. Transporta o saldo
+                    saldoInicialMensal = saldoFinalCalculado;
+                    
+                    // 2. Limpa dados para o novo mês
+                    gastos = [];
                     pessoas.forEach(p => p.pago = false);
                     
+                    // 3. Salva e Renderiza
                     salvar();
                     render();
+                    renderGastos();
                     
-                    // Sincroniza apenas o status dos jogadores com a nuvem
-                    enviarParaSheets({ action: 'save', data: pessoas });
+                    // 4. Sincroniza com a nuvem (Tudo de uma vez)
+                     enviarParaSheets({ action: 'save', data: pessoas });
+                     enviarParaSheets({ type: 'gastos', action: 'save', data: gastos, saldoInicial: saldoInicialMensal });
                     
                     localStorage.setItem('capangas_last_reset', mesAtual);
-                    showToast("🔄 Status de pagamento zerados para o novo mês!");
+                    showToast("🔄 Fechamento concluído e saldo transportado!");
                 }
             }
         }
