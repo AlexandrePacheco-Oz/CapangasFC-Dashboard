@@ -1585,6 +1585,7 @@
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
                     <input type="text" id="novoGastoDesc" placeholder="Descrição (ex: Água)" style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
                     <input type="number" id="novoGastoValor" placeholder="Valor R$" style="flex:1; min-width:80px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
+                    <input type="text" id="novoGastoLink" placeholder="Link Comprovante (Opcional)" style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
                     <button onclick="adicionarGasto()" style="background:var(--danger); color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕ Adicionar</button>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px; margin-top:5px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05);">
@@ -1836,6 +1837,9 @@
             if (data && data.gastos) {
                 gastos = data.gastos;
                 saldoInicialMensal = parseFloat(data.saldoInicial) || 0;
+                
+                // Limpa anexos undefined vindos da planilha
+                gastos.forEach(g => { if (!g.link) g.link = ""; });
                 
                 salvar(); // Atualiza cache local
                 render();
@@ -2211,10 +2215,14 @@
             lista.innerHTML = "";
 
             gastos.forEach((g, i) => {
+                const hasLink = g.link && g.link.trim() !== "";
                 lista.innerHTML += `
                     <tr>
-                        <td style="font-weight: 500;">${g.descricao}</td>
-                        <td style="color: var(--danger);">- R$ ${parseFloat(g.valor).toFixed(2)}</td>
+                        <td style="font-weight: 500;">
+                            ${g.descricao}
+                            ${hasLink ? `<a href="${g.link}" target="_blank" style="margin-left:6px; text-decoration:none;" title="Ver Comprovante">📎</a>` : ""}
+                        </td>
+                        <td style="color: var(--danger); font-weight: 700;">- R$ ${parseFloat(g.valor).toFixed(2)}</td>
                         <td>
                             <button class="action-btn btn-delete" onclick="removerGasto(${i})" ${!adminLogado ? 'disabled' : ''}>
                                 Excluir
@@ -2226,13 +2234,22 @@
         }
 
         function adicionarGasto() {
-            const desc = document.getElementById("novoGastoDesc").value.trim();
-            const val = parseFloat(document.getElementById("novoGastoValor").value);
-            if (!desc || isNaN(val)) { showToast('⚠️ Digite descrição e valor!'); return; }
+            const descValue = document.getElementById("novoGastoDesc").value.trim();
+            const valValue = parseFloat(document.getElementById("novoGastoValor").value);
+            const linkValue = document.getElementById("novoGastoLink").value.trim();
+            
+            if (!descValue || isNaN(valValue)) { showToast('⚠️ Digite descrição e valor!'); return; }
 
-            gastos.push({ descricao: desc, valor: val, data: new Date().toISOString() });
+            gastos.push({ 
+                descricao: descValue, 
+                valor: valValue, 
+                data: new Date().toISOString(),
+                link: linkValue || "" 
+            });
+            
             document.getElementById("novoGastoDesc").value = "";
             document.getElementById("novoGastoValor").value = "";
+            document.getElementById("novoGastoLink").value = "";
             
             salvar();
             render();
