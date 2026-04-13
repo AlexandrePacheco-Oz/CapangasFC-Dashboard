@@ -685,9 +685,9 @@
             }
 
             .stats-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-                margin-bottom: 15px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 20px;
             }
 
             .stat-card {
@@ -1595,6 +1595,10 @@
 
         <div class="stats-grid">
             <div class="stat-card">
+                <div class="stat-label">Saldo em Caixa</div>
+                <div class="stat-value" id="statSaldoCaixa" style="color: var(--accent); font-size: 1.2rem;">R$ 0</div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-label">Total Arrecadado</div>
                 <div class="stat-value paid" id="statArrecadado">R$ 0</div>
             </div>
@@ -2451,10 +2455,12 @@
             const totalSaidas = gastos.reduce((acc, g) => acc + (parseFloat(g.valor) || 0), 0);
             const saldoFinal = (saldoInicialMensal + totalArrecadado) - totalSaidas;
 
+            const elSaldo = document.getElementById("statSaldoCaixa");
             const elAnt = document.getElementById("gastoSaldoAnterior");
             const elEnt = document.getElementById("gastoEntradas");
             const elSai = document.getElementById("gastoSaidas");
 
+            if (elSaldo) elSaldo.innerText = "R$ " + saldoFinal.toFixed(2);
             if (elAnt) elAnt.innerText = "R$ " + saldoInicialMensal.toFixed(2);
             if (elEnt) elEnt.innerText = "R$ " + totalArrecadado.toFixed(2);
             if (elSai) elSai.innerText = "R$ " + totalSaidas.toFixed(2);
