@@ -16,8 +16,8 @@ Um dashboard moderno e responsivo para controle de mensalidades de membros do **
 1. Clone este repositório.
 2. Abra o arquivo `index.html` em qualquer navegador.
 3. Para marcar pagamentos, utilize o login padrão:
-   - **Usuário**: `admin`
-   - **Senha**: `123`
+   - **Usuário**: `XXXX`
+   - **Senha**: `XXXX`
 
 ## 🛠️ Tecnologias
 
