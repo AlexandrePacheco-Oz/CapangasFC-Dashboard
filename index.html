@@ -1767,12 +1767,12 @@
 
         <!-- Botão para expandir/recolher a tabela de mensalidades -->
         <button onclick="toggleMensalidade()" id="btnToggleMensalidade"
-            style="width:100%; margin-top:20px; background:rgba(212,175,55,0.05); border:1px solid rgba(212,175,55,0.3); border-radius:12px; padding:16px; color:var(--accent); font-weight:700; cursor:pointer; font-size:1rem; display:flex; justify-content:space-between; align-items:center; transition:background 0.3s;">
+            style="width:100%; margin-top:20px; background:rgba(212,175,55,0.15); border:1px solid var(--accent); border-radius:12px; padding:16px; color:var(--accent); font-weight:700; cursor:pointer; font-size:1rem; display:flex; justify-content:space-between; align-items:center; transition:background 0.3s;">
             <span style="display:flex; align-items:center; gap:8px;">💰 Painel de Mensalidades</span>
-            <span id="mensalidadeChevron" style="transition:transform 0.3s;">▼</span>
+            <span id="mensalidadeChevron" style="transition:transform 0.3s; transform: rotate(180deg);">▼</span>
         </button>
 
-        <div id="mensalidadeSection" style="display:none; flex-direction:column; gap:15px; margin-top:15px;">
+        <div id="mensalidadeSection" style="display:flex; flex-direction:column; gap:15px; margin-top:15px;">
 
             <!-- Painel Admin de Mensalidade -->
             <div id="mensalidadeAdminPanel"
@@ -1853,8 +1853,16 @@
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
                     <input type="text" id="novoGastoDesc" placeholder="Descrição (ex: Água)" style="flex:2; min-width:150px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
                     <input type="number" id="novoGastoValor" placeholder="Valor R$" style="flex:1; min-width:80px; background:rgba(255,255,255,0.05); border:1px solid var(--danger); border-radius:8px; padding:8px; color:#fff;">
-                    
                     <button onclick="adicionarGasto()" style="background:var(--danger); color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer;">➕ Adicionar</button>
+                </div>
+
+                <!-- Novo: Ajuste de Saldo Anterior -->
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; padding-top:8px; border-top:1px dashed rgba(255,255,255,0.1);">
+                    <div style="flex:2; display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:0.65rem; color:var(--text-dim);">Ajustar Saldo Anterior (Mês Passado):</label>
+                        <input type="number" id="ajusteSaldoAnterior" placeholder="R$ 0.00" style="background:rgba(255,255,255,0.05); border:1px solid var(--accent); border-radius:8px; padding:8px; color:#fff;">
+                    </div>
+                    <button onclick="ajustarSaldo()" style="align-self:flex-end; background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; height:36px;">💾 Ajustar Saldo</button>
                 </div>
             </div>
 
@@ -2026,7 +2034,7 @@
         let pessoas = [...pessoasPadrao];
         
         let gastos = [];
-        let saldoInicialMensal = 0;
+        let saldoInicialMensal = 59.02;
 
         // =============================================
         // 📡 Funções de comunicação com Google Sheets
@@ -2099,7 +2107,8 @@
 
             if (data && data.gastos) {
                 gastos = data.gastos;
-                saldoInicialMensal = parseFloat(data.saldoInicial) || 0;
+                const sheetSaldo = parseFloat(data.saldoInicial);
+                saldoInicialMensal = (sheetSaldo > 0) ? sheetSaldo : 59.02;
                 
                 // Limpa anexos undefined vindos da planilha
                 gastos.forEach(g => { if (!g.link) g.link = ""; });
@@ -2157,7 +2166,10 @@
 
             let saldoIni = localStorage.getItem("capangas_saldo_inicial");
             if (saldoIni) {
-                saldoInicialMensal = parseFloat(saldoIni);
+                const cachedSaldo = parseFloat(saldoIni);
+                saldoInicialMensal = (cachedSaldo > 0) ? cachedSaldo : 59.02;
+            } else {
+                saldoInicialMensal = 59.02;
             }
             
             render();
@@ -2452,8 +2464,21 @@
         }
 
         function renderFinanceiro(totalArrecadado) {
-            const totalSaidas = gastos.reduce((acc, g) => acc + (parseFloat(g.valor) || 0), 0);
-            const saldoFinal = (saldoInicialMensal + totalArrecadado) - totalSaidas;
+            const agora = new Date();
+            const mesAtual = agora.getMonth();
+            const anoAtual = agora.getFullYear();
+
+            // Soma apenas gastos do mês ATUAL para não descontar o que já foi tirado do saldo anterior
+            const totalSaidasMes = gastos.reduce((acc, g) => {
+                if (!g.data) return acc; // Se não tem data, ignoramos no cálculo do mês atual
+                const dataGasto = new Date(g.data);
+                if (dataGasto.getMonth() === mesAtual && dataGasto.getFullYear() === anoAtual) {
+                    return acc + (parseFloat(g.valor) || 0);
+                }
+                return acc;
+            }, 0);
+
+            const saldoFinal = (saldoInicialMensal + totalArrecadado) - totalSaidasMes;
 
             const elSaldo = document.getElementById("statSaldoCaixa");
             const elAnt = document.getElementById("gastoSaldoAnterior");
@@ -2463,7 +2488,13 @@
             if (elSaldo) elSaldo.innerText = "R$ " + saldoFinal.toFixed(2);
             if (elAnt) elAnt.innerText = "R$ " + saldoInicialMensal.toFixed(2);
             if (elEnt) elEnt.innerText = "R$ " + totalArrecadado.toFixed(2);
-            if (elSai) elSai.innerText = "R$ " + totalSaidas.toFixed(2);
+            if (elSai) elSai.innerText = "R$ " + totalSaidasMes.toFixed(2);
+
+            // Atualiza o input de ajuste de saldo se não estiver focado
+            const elInputAnt = document.getElementById("ajusteSaldoAnterior");
+            if (elInputAnt && document.activeElement !== elInputAnt) {
+                elInputAnt.value = saldoInicialMensal.toFixed(2);
+            }
         }
 
         function toggleGastos() {
@@ -2543,6 +2574,21 @@
                 enviarParaSheets({ type: 'gastos', action: 'save', data: gastos, saldoInicial: saldoInicialMensal });
                 showToast("🗑️ Gasto removido!");
             }
+        }
+
+        function ajustarSaldo() {
+            const val = parseFloat(document.getElementById("ajusteSaldoAnterior").value);
+            if (isNaN(val)) { 
+                showToast('⚠️ Digite um valor válido!'); 
+                return; 
+            }
+            
+            saldoInicialMensal = val;
+            salvar();
+            render(); // render chama renderFinanceiro que atualiza tudo
+            
+            enviarParaSheets({ type: 'gastos', action: 'save', data: gastos, saldoInicial: saldoInicialMensal });
+            showToast("✅ Saldo anterior ajustado!");
         }
 
 
